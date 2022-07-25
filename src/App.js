@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import Routes from './routes/Routes';
+import { SnackbarProvider } from 'notistack';
+import WebViewerContext from './context/webviewer';
+import React, { useState } from 'react';
+import AuthProvider from './provider/AuthProvider';
+import NotificationProvider from './hook/useDocNotification';
 
 function App() {
+  const [instance, setInstance] = useState();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WebViewerContext.Provider value={{ instance, setInstance }}>
+      <div className="App">
+        <SnackbarProvider maxSnack={10}>
+          <AuthProvider>
+            {/* <NotificationProvider> */}
+            <Routes />
+            {/* </NotificationProvider> */}
+          </AuthProvider>
+        </SnackbarProvider>
+      </div>
+    </WebViewerContext.Provider>
   );
 }
 
