@@ -119,8 +119,48 @@ const DisposisiComponent = ({ open, setOpen, filename, rows }) => {
               horizontal: 'left',
             },
           });
-          setOpen(false);
+          // setOpen(false);
           // handleArsipkan();
+          API.post('/api/suratmasuk/arsip', {
+            jenis_arsip: 'suratmasuk',
+            id_surat: rows.id_surat,
+            created_by: currentUser.nip,
+          })
+            .then((res) => {
+              if (res.data.status === 1) {
+                enqueueSnackbar('Data Berhasil Di Arsipkan', {
+                  variant: 'success',
+                  autoHideDuration: 3000,
+                  anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  },
+                });
+                // handleSelesai();
+                setOpen(false);
+              } else {
+                console.log(res.data.message);
+                enqueueSnackbar('Data Gagal Di Arsipkan', {
+                  variant: 'error',
+                  autoHideDuration: 3000,
+                  anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  },
+                });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              enqueueSnackbar('Data Gagal Di Arsipkan', {
+                variant: 'error',
+                autoHideDuration: 3000,
+                anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                },
+              });
+            });
         } else {
           console.log(response.data.message);
           enqueueSnackbar('Data Gagal Di Proses', {
