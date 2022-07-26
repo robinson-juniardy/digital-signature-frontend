@@ -34,7 +34,7 @@ const PrimeCharts = React.memo(() => {
           setData(response.data);
         })
         .catch((error) => console.log(error));
-    }, 5000);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 

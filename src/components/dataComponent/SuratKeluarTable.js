@@ -82,7 +82,7 @@ const SuratKeluarTable = React.memo(() => {
   useEffect(() => {
     const interval = setInterval(() => {
       getData();
-    }, 5000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);

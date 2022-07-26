@@ -30,6 +30,7 @@ import DataTable from 'react-data-table-component';
 import PrimeCharts from '../../../components/dataComponent/PrimeCharts';
 import SuratKeluarTable from '../../../components/dataComponent/SuratKeluarTable';
 import SuratMasukTable from '../../../components/dataComponent/SuratMasukTable';
+import Dashboard from './Dashboard';
 // import SuratKeluarTable from '../components/SuratKeluarTable';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -178,11 +179,16 @@ const AdminHome = () => {
     <>
       <Grid container spacing={1}>
         <Grid item xs={12} md={12} lg={12}>
+          <h1>Utility Dashboard</h1>
+          <Dashboard />
+          <br />
           {/* <Card> */}
           <PrimeCharts />
           {/* </Card> */}
         </Grid>
-        <Grid item xs={12} md={12} lg={12}>
+        <Divider variant="fullWidth" orientation="horizontal" />
+        <Grid item xs={12} md={12} lg={12}></Grid>
+        {/* <Grid item xs={12} md={12} lg={12}>
           <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
             <AppBar position="static">
               <Tabs
@@ -210,7 +216,7 @@ const AdminHome = () => {
               </TabPanel>
             </SwipeableViews>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     </>
   );

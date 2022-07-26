@@ -75,6 +75,7 @@ TabPanel.propTypes = {
 
 const DataManagement = () => {
   const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [jabatanData, setJabatanData] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
   const [editmode, setEditmode] = useState(false);
@@ -204,6 +205,63 @@ const DataManagement = () => {
       });
   };
 
+  const getRoles = () => {
+    API.get('/api/users/roles')
+      .then((response) => {
+        setRoles(response.data?.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar('Data Role Gagal Di Load', {
+          variant: 'error',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+      });
+  };
+
+  const rolesCreate = (values) => {
+    API.post('/api/users/roles', { ...values })
+      .then((response) => {
+        if (response.data.status === 1) {
+          enqueueSnackbar('Data Berhasil Di Simpan', {
+            variant: 'success',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+          getRoles();
+          formRoles.resetForm();
+        } else {
+          console.log(response.data.message);
+          enqueueSnackbar('Data Gagal Di Simpan', {
+            variant: 'error',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar('Data Gagal Di Simpan', {
+          variant: 'error',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+      });
+  };
+
   const userCreate = (values) => {
     API.post('/api/users/create', { ...values })
       .then((response) => {
@@ -304,6 +362,15 @@ const DataManagement = () => {
     onSubmit: (values) => (editmode ? userUpdate(values) : userCreate(values)),
   });
 
+  const formRoles = useFormik({
+    initialValues: {
+      roleId: null,
+      roleName: '',
+      disposisionLevel: 0,
+    },
+    onSubmit: (values) => rolesCreate(values),
+  });
+
   const roleOptions = [
     {
       role: 'Admin',
@@ -342,6 +409,7 @@ const DataManagement = () => {
 
   useEffect(() => {
     getUsers();
+    getRoles();
     getJabatan();
   }, []);
 
@@ -358,7 +426,7 @@ const DataManagement = () => {
           aria-label="full width tabs example"
         >
           <Tab icon={<Icon.PersonOutline />} label="Users Management" {...a11yProps(0)} />
-          {/* <Tab icon={<Icon.SettingsAccessibility />} label="Users Privileges" {...a11yProps(1)} /> */}
+          <Tab icon={<Icon.SettingsAccessibility />} label="Role Management" {...a11yProps(1)} />
           {/* <Tab label="Item Three" {...a11yProps(2)} /> */}
         </Tabs>
       </AppBar>
@@ -556,7 +624,37 @@ const DataManagement = () => {
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={4}></Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <form onSubmit={formRoles.handleSubmit} onReset={formRoles.handleReset}>
+                <Stack direction="column" spacing={1}>
+                  <TextField
+                    label="Role Name"
+                    name="roleName"
+                    onChange={formRoles.handleChange}
+                    value={formRoles.values.roleName}
+                    variant="standard"
+                    fullWidth
+                  />
+                  <TextField
+                    label="Disposisi Level"
+                    type="number"
+                    name="disposisionLevel"
+                    onChange={formRoles.handleChange}
+                    value={formRoles.values.disposisionLevel}
+                    variant="standard"
+                    fullWidth
+                  />
+                  <Stack direction="row" spacing={1}>
+                    <Button variant="contained" type="submit" color="success" startIcon={<Icon.SaveOutlined />}>
+                      Simpan
+                    </Button>
+                    <Button variant="contained" type="reset" color="inherit" startIcon={<Icon.RestoreOutlined />}>
+                      Reset
+                    </Button>
+                  </Stack>
+                </Stack>
+              </form>
+            </Grid>
             <Grid item xs={12} md={12} lg={12}>
               <Card>
                 <div className="datatable-crud-demo">
@@ -565,28 +663,18 @@ const DataManagement = () => {
                       header={
                         <>
                           <Typography variant="overline" component="span">
-                            User List
+                            Role List
                           </Typography>
                         </>
                       }
                       paginator
-                      rows={5}
-                      value={users}
-                      rowsPerPageOptions={[5, 10, 25]}
+                      rows={10}
+                      value={roles}
+                      rowsPerPageOptions={[10, 25, 50]}
                     >
                       <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column>
-                      <Column field="nip" header="Nip" sortable></Column>
-                      <Column field="nama" header="Nama" sortable></Column>
-                      <Column field="role_name" header="Jabatan" sortable></Column>
-                      <Column field="role" header="Role" sortable></Column>
-                      <Column
-                        field="atribut"
-                        header="Atribut Khusus"
-                        showFilterMenu={false}
-                        filterMenuStyle={{ width: '14rem' }}
-                        style={{ minWidth: '12rem' }}
-                        filterElement={statusRowFilterTemplate}
-                      ></Column>
+                      <Column field="role_name" header="Role" sortable></Column>
+                      <Column field="disposision_level" header="Level Disposisi" sortable></Column>
                     </DataTable>
                   </div>
                 </div>

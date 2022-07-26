@@ -68,7 +68,7 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   useEffect(() => {
     const interval = setInterval(() => {
       getData();
-    }, 5000);
+    }, 1500);
 
     return () => clearInterval(interval);
   }, []);

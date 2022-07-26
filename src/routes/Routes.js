@@ -81,6 +81,10 @@ const Routes = () => {
               element: <EselonHome />,
               //   index: true,
             },
+            {
+              path: 'surat',
+              element: <SuratMasuk />,
+            },
           ],
         },
       ],
@@ -97,6 +101,10 @@ const Routes = () => {
               path: 'home',
               element: <EselonHome />,
               //   index: true,
+            },
+            {
+              path: 'surat',
+              element: <SuratMasuk />,
             },
           ],
         },
@@ -116,12 +124,8 @@ const Routes = () => {
               //   index: true,
             },
             {
-              path: 'suratmasuk',
+              path: 'surat',
               element: <SuratMasuk />,
-            },
-            {
-              path: 'suratKeluar',
-              element: <SuratKeluar />,
             },
           ],
         },

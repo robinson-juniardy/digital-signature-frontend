@@ -44,6 +44,11 @@ const roleMenu = [
         path: '/staff/home',
         icon: <Icons.HomeOutlined />,
       },
+      {
+        title: 'Surat',
+        path: '/staff/surat',
+        icon: <Icons.InboxOutlined />,
+      },
       // {
       //   title: 'Disposisi Selesai',
       //   path: '/es/arsip/disposisi/selesai',
@@ -102,7 +107,12 @@ const roleMenu = [
       {
         title: 'Home',
         path: '/es/home',
-        icon: <DashboardIcon />,
+        icon: <Icons.HomeOutlined />,
+      },
+      {
+        title: 'Surat',
+        path: '/es/surat',
+        icon: <Icons.InboxOutlined />,
       },
     ],
   },
@@ -113,6 +123,11 @@ const roleMenu = [
         title: 'Home',
         path: '/opd/home',
         icon: <Icons.HomeOutlined />,
+      },
+      {
+        title: 'Surat',
+        path: '/opd/surat',
+        icon: <Icons.InboxOutlined />,
       },
     ],
   },
