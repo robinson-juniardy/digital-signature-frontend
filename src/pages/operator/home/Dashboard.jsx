@@ -10,6 +10,7 @@ import { Card, Divider, Stack, Typography } from '@mui/material';
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [data, setData] = useState(null);
+  const [arsip, setArsip] = useState(0);
 
   const getUsers = () => {
     API.get('/api/users/list')
@@ -27,9 +28,18 @@ const Dashboard = () => {
       .catch((error) => console.log(error));
   };
 
+  const getArsip = () => {
+    API.get('/api/suratmasuk/arsip/')
+      .then((response) => {
+        setArsip(response.data.data.length);
+      })
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     getUsers();
     getStatistik();
+    getArsip();
   }, []);
 
   return (
@@ -41,7 +51,7 @@ const Dashboard = () => {
             <Stack alignContent="center" alignItems="center" direction="row" spacing={1}>
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.AccountBoxOutlined fontSize="large" />
+                  <Icons.AccountBoxOutlined style={{ color: 'darkred' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {users.length}
                   </Typography>
@@ -54,7 +64,7 @@ const Dashboard = () => {
 
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.InboxTwoTone color="warning" fontSize="large" />
+                  <Icons.InboxTwoTone style={{ color: 'indigo' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.suratmasuk}
                   </Typography>
@@ -66,7 +76,7 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 230 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.OutboxOutlined fontSize="large" />
+                  <Icons.OutboxOutlined style={{ color: 'green' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.suratkeluar}
                   </Typography>
@@ -78,7 +88,7 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.CheckBoxOutlined fontSize="large" />
+                  <Icons.CheckBoxOutlined style={{ color: 'darksalmon' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.selesai}
                   </Typography>
@@ -90,7 +100,7 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 225 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.SwitchAccountOutlined fontSize="large" />
+                  <Icons.SwitchAccountOutlined style={{ color: 'darkorchid' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.disposisi}
                   </Typography>
@@ -102,7 +112,7 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 225 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.SwitchAccessShortcut fontSize="large" />
+                  <Icons.SwitchAccessShortcut style={{ color: 'darkmagenta' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.disposisi_selesai}
                   </Typography>
@@ -117,7 +127,7 @@ const Dashboard = () => {
             <Stack alignContent="center" alignItems="center" direction="row" spacing={1}>
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.AutorenewOutlined fontSize="large" />
+                  <Icons.AutorenewOutlined style={{ color: 'darkgoldenrod' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.disposisi_proses}
                   </Typography>
@@ -129,7 +139,7 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.BlindsClosedOutlined fontSize="large" />
+                  <Icons.BlindsClosedOutlined style={{ color: 'darkcyan' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.disposisi_belum_proses}
                   </Typography>
@@ -141,13 +151,25 @@ const Dashboard = () => {
               </Card>
               <Card sx={{ p: 2, minWidth: 200 }}>
                 <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
-                  <Icons.PendingOutlined fontSize="large" />
+                  <Icons.PendingOutlined style={{ color: 'darkblue' }} fontSize="large" />
                   <Typography variant="overline" component="span">
                     {data.belum_diproses}
                   </Typography>
 
                   <Typography variant="overline" component="span">
                     Surat Masuk Outstanding
+                  </Typography>
+                </Stack>
+              </Card>
+              <Card sx={{ p: 2, minWidth: 200 }}>
+                <Stack alignContent="center" alignItems="center" direction="column" spacing={1}>
+                  <Icons.ArchiveOutlined style={{ color: 'darkgreen' }} fontSize="large" />
+                  <Typography variant="overline" component="span">
+                    {arsip}
+                  </Typography>
+
+                  <Typography variant="overline" component="span">
+                    Arsip
                   </Typography>
                 </Stack>
               </Card>

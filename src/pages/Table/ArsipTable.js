@@ -38,6 +38,7 @@ const ArsipTable = React.memo(() => {
     representative: { value: null, matchMode: FilterMatchMode.IN },
     judul: { value: null, matchMode: FilterMatchMode.CONTAINS },
     perihal_surat: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    diarsipkan_oleh: { value: null, matchMode: FilterMatchMode.CONTAINS },
     status_eksekusi: { value: null, matchMode: FilterMatchMode.EQUALS },
     verified: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
@@ -56,7 +57,13 @@ const ArsipTable = React.memo(() => {
   const StatusEksekusi = ['Di Paraf', 'Di Tandatangani', 'Dikembalikan', 'Di Proses'];
 
   const getData = () => {
-    API.get(`/api/suratmasuk/arsip/${currentUser.nip}`)
+    API.get(
+      `${
+        currentUser.role === 'admin' || currentUser.role === 'operator'
+          ? `/api/suratmasuk/arsip`
+          : `/api/suratmasuk/arsip/${currentUser.nip}`
+      } `
+    )
       .then((response) => {
         setdata(response.data.data);
       })
@@ -68,7 +75,7 @@ const ArsipTable = React.memo(() => {
   useEffect(() => {
     const interval = setInterval(() => {
       getData();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -145,6 +152,9 @@ const ArsipTable = React.memo(() => {
         >
           {/* <Column expander style={{ width: '3em' }} /> */}
           <Column filter filterPlaceholder="Search by perihal" field="perihal_surat" header="Perihal"></Column>
+          {currentUser.role === 'admin' || currentUser.role === 'operator' ? (
+            <Column field="diarsipkan_oleh" header="Di Arsipkan Oleh" filter filterPlaceholder="Search By Name" />
+          ) : null}
           <Column
             field="tanggal_arsip"
             header="Di Arsipkan Pada"

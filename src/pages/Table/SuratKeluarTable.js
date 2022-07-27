@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable prefer-template */
 /* eslint-disable no-else-return */
 /* eslint-disable prefer-const */
@@ -26,9 +27,18 @@ import { Badge } from 'primereact/badge';
 import API from '../../hook/API';
 import { AppBar, Box, IconButton, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
-import { DeleteOutline, EditOutlined } from '@mui/icons-material';
+import {
+  AddBoxOutlined,
+  AlternateEmail,
+  AlternateEmailOutlined,
+  AppRegistrationOutlined,
+  BorderColor,
+  CreateOutlined,
+  DeleteOutline,
+  EditOutlined,
+} from '@mui/icons-material';
 
-const SuratKeluarTable = React.memo((setfilename, setOpen) => {
+const SuratKeluarTable = React.memo(({ setFilename, setOpen, open, setRows }) => {
   const { currentUser } = React.useContext(AuthContext);
   const [data, setdata] = React.useState([]);
   const [expandedRows, setExpandedRows] = React.useState(null);
@@ -85,7 +95,7 @@ const SuratKeluarTable = React.memo((setfilename, setOpen) => {
   useEffect(() => {
     const interval = setInterval(() => {
       getData();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -153,6 +163,57 @@ const SuratKeluarTable = React.memo((setfilename, setOpen) => {
             field="eksekusi"
             header="Status Eksekusi"
           ></Column>
+          <Column
+            align="center"
+            body={(row) => {
+              return (
+                <>
+                  {currentUser.paraf === 1 && row.eksekutor === currentUser.id && (
+                    <>
+                      {row.atribut === 'Pemaraf' && (
+                        <strong>
+                          <Tooltip title="Paraf">
+                            <IconButton
+                              disabled={row.status_level === row.level_eksekusi ? false : true}
+                              onClick={(e) => {
+                                setOpen(true);
+                                setFilename(row.filename);
+                                setRows(row);
+                              }}
+                              color="primary"
+                            >
+                              <AlternateEmailOutlined />
+                            </IconButton>
+                          </Tooltip>
+                        </strong>
+                      )}
+                    </>
+                  )}
+                  {currentUser.ttd === 1 && row.eksekutor === currentUser.id && (
+                    <>
+                      {row.atribut === 'Penanda Tangan' && (
+                        <strong>
+                          <Tooltip title="Tanda Tangan">
+                            <IconButton
+                              disabled={row.status_level === row.level_eksekusi ? false : true}
+                              onClick={(e) => {
+                                setOpen(true);
+                                setFilename(row.filename);
+                                setRows(row);
+                              }}
+                              color="primary"
+                            >
+                              <AppRegistrationOutlined />
+                            </IconButton>
+                          </Tooltip>
+                        </strong>
+                      )}
+                    </>
+                  )}
+                </>
+              );
+            }}
+          />
           {/* <Column
             header="Actions"
             body={(row) => {

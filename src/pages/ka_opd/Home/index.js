@@ -60,6 +60,7 @@ import PrimeCharts from '../../../components/dataComponent/PrimeCharts';
 import SuratMasukTable from '../../Table/SuratMasukTable';
 import SuratKeluarTable from '../../Table/SuratKeluarTable';
 import OPDDisposisi from '../disposisi/Disposisi';
+import Dashboard from './Dashboard';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -147,69 +148,9 @@ export default function OpdHome() {
 
       <Grid container spacing={1}>
         <Grid item xs={12} md={12} lg={12}>
-          <Card sx={{ padding: 4, mt: 1 }}>
-            <Stack direction="row" justifyContent="space-between" spacing={2}>
-              <PrimeCharts />
-            </Stack>
-          </Card>
-          <Stack sx={{ mt: 1 }} direction={'row'} spacing={1}>
-            <Card sx={{ padding: 1, textAlign: 'center' }}>
-              <Typography variant="overline" component="span">
-                Atribut khusus - Anda Adalah {currentUser.atribut}
-              </Typography>
-
-              <Divider sx={{ mb: 1 }} variant="fullWidth" />
-              <Stack direction="row" spacing={1}>
-                <Button
-                  sx={{ width: '100%' }}
-                  startIcon={<AssignmentLateOutlined />}
-                  variant="contained"
-                  onClick={() => setOpen(true)}
-                  color="secondary"
-                >
-                  Cek Dokumen Anda
-                </Button>
-              </Stack>
-            </Card>
-          </Stack>
-        </Grid>
-        <Grid item xs={12} md={12} lg={12}>
-          <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
-            <AppBar position="static">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="secondary"
-                textColor="inherit"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="Surat Keluar" {...a11yProps(0)} />
-                <Tab label="Surat Masuk" {...a11yProps(1)} />
-                <Tab label="Arsip Anda" {...a11yProps(2)} />
-              </Tabs>
-            </AppBar>
-            <SwipeableViews
-              axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-              index={value}
-              onChangeIndex={handleChangeIndex}
-            >
-              <TabPanel value={value} index={0} dir={theme.direction}>
-                <SuratKeluarTable setOpen={setOpen} setfilename={setfilename} />
-              </TabPanel>
-              <TabPanel value={value} index={1} dir={theme.direction}>
-                <SuratMasukTable
-                  open={disposisiOpen}
-                  setOpen={setDisposisiOpen}
-                  setFilename={setfilename}
-                  setRows={setRows}
-                />
-              </TabPanel>
-              <TabPanel value={value} index={2} dir={theme.direction}>
-                <ArsipTable />
-              </TabPanel>
-            </SwipeableViews>
-          </Box>
+          <Dashboard />
+          <br />
+          <PrimeCharts />
         </Grid>
       </Grid>
     </>
