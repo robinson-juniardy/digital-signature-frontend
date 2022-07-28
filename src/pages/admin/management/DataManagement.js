@@ -35,6 +35,8 @@ import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { Dialog } from 'primereact/dialog';
 import 'primereact/resources/themes/lara-light-indigo/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
@@ -95,6 +97,9 @@ const DataManagement = () => {
     role: { value: null, matchMode: FilterMatchMode.EQUALS },
     role_name: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
+
+  const [selectedRoles, setSelectedRoles] = useState(null);
+  const [deleteRolesDialog, setDeleteRolesDialog] = useState(false);
 
   const AtributKhusus = ['Pemaraf', 'Penanda Tangan'];
   const Jabatan = ['KA.OPD', 'ESELON 3', 'ESELON 4', 'STAFF'];
@@ -239,7 +244,7 @@ const DataManagement = () => {
           formRoles.resetForm();
         } else {
           console.log(response.data.message);
-          enqueueSnackbar('Data Gagal Di Simpan', {
+          enqueueSnackbar(response.data.message, {
             variant: 'error',
             autoHideDuration: 3000,
             anchorOrigin: {
@@ -252,6 +257,84 @@ const DataManagement = () => {
       .catch((error) => {
         console.log(error);
         enqueueSnackbar('Data Gagal Di Simpan', {
+          variant: 'error',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+      });
+  };
+
+  const rolesUpdate = (values) => {
+    API.put('/api/users/roles', { ...values })
+      .then((response) => {
+        if (response.data.status === 1) {
+          enqueueSnackbar('Data Berhasil Di Simpan', {
+            variant: 'success',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+          getRoles();
+        } else {
+          console.log(response.data.message);
+          enqueueSnackbar(response.data.message, {
+            variant: 'error',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar('Data Gagal Di Simpan', {
+          variant: 'error',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+      });
+  };
+
+  const rolesDelete = () => {
+    API.delete('/api/users/roles', { data: { id_roles: selectedRoles.id } })
+      .then((response) => {
+        if (response.data.status === 1) {
+          enqueueSnackbar('Data Berhasil Di Hapus', {
+            variant: 'success',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+          setDeleteRolesDialog(false);
+          setSelectedRoles(null);
+          getRoles();
+        } else {
+          console.log(response.data.message);
+          enqueueSnackbar(response.data.message, {
+            variant: 'error',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar('Data Gagal Di Hapus', {
           variant: 'error',
           autoHideDuration: 3000,
           anchorOrigin: {
@@ -368,6 +451,7 @@ const DataManagement = () => {
       roleName: '',
       disposisionLevel: 0,
     },
+    enableReinitialize: true,
     onSubmit: (values) => rolesCreate(values),
   });
 
@@ -406,6 +490,48 @@ const DataManagement = () => {
       atribut: 'Penanda Tangan',
     },
   ];
+
+  const textEditor = (options) => {
+    return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+  }
+
+  const textEditorNumber = (options) => {
+    return <InputText type="number" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+  }
+
+  const onRowEditRoles = (e) => {
+    rolesUpdate(e.newData);
+  }
+
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <>
+        <IconButton>
+          <Icon.DeleteTwoTone color="action" onClick={() => confirmDeleteRoles(rowData)} />
+        </IconButton>
+      </>
+    );
+  }
+
+  const confirmDeleteRoles = (roles) => {
+    setSelectedRoles(roles);
+    setDeleteRolesDialog(true);
+  }
+
+  const hideDeleteProductDialog = () => {
+    setDeleteRolesDialog(false);
+  }
+
+  const deleteProductDialogFooter = (
+    <>
+      <Button startIcon={<Icon.Close />} variant="text" color="primary" onClick={hideDeleteProductDialog}>
+        NO
+      </Button>
+      <Button startIcon={<Icon.Check />} variant="text" color="primary" onClick={rolesDelete}>
+        YES
+      </Button>
+    </>
+  );
 
   useEffect(() => {
     getUsers();
@@ -667,20 +793,30 @@ const DataManagement = () => {
                           </Typography>
                         </>
                       }
+                      editMode="row"
+                      dataKey="id"
                       paginator
                       rows={10}
                       value={roles}
+                      onRowEditComplete={onRowEditRoles}
                       rowsPerPageOptions={[10, 25, 50]}
                     >
-                      <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column>
-                      <Column field="role_name" header="Role" sortable></Column>
-                      <Column field="disposision_level" header="Level Disposisi" sortable></Column>
+                      <Column field="role_name" header="Role" editor={(options) => textEditor(options)} sortable></Column>
+                      <Column field="disposision_level" header="Level Disposisi" editor={(options) => textEditorNumber(options)} sortable></Column>
+                      <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
+                      <Column body={actionBodyTemplate} style={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                   </div>
                 </div>
               </Card>
             </Grid>
           </Grid>
+          <Dialog visible={deleteRolesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+            <div className="confirmation-content">
+              <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+              {selectedRoles && <span>Are you sure you want to delete Role Name : <b>{selectedRoles.role_name}</b> and Disposision Level = <b>{selectedRoles.disposision_level}</b>?</span>}
+            </div>
+          </Dialog>
         </TabPanel>
       </SwipeableViews>
     </Box>
