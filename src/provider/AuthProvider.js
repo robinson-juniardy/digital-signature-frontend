@@ -19,6 +19,8 @@ const AuthProvider = ({ children }) => {
     const nip = localStorage.getItem('nip');
     const disposision_level = localStorage.getItem('disposision_level');
     const atribut = localStorage.getItem('atribut');
+    const paraf = localStorage.getItem('paraf');
+    const ttd = localStorage.getItem('ttd');
     if (id) {
       setCurrentUser({
         role,
@@ -28,6 +30,8 @@ const AuthProvider = ({ children }) => {
         nip,
         disposision_level,
         atribut,
+        paraf,
+        ttd,
       });
     } else {
       setCurrentUser(null);

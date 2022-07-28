@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable prefer-template */
 import { Autocomplete, Button, Stack, TextField, Typography } from '@mui/material';
 import React, { useState, useEffect, useLayoutEffect, useContext } from 'react';
@@ -14,16 +15,21 @@ import {
   RestoreOutlined,
   SendAndArchive,
   SendAndArchiveOutlined,
+  ViewAgenda,
+  ViewAgendaOutlined,
+  VisibilityOutlined,
+  VisibilityTwoTone,
 } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 
-const Signatures = ({ filename }) => {
+const Signatures = ({ filename, rowdata }) => {
   const { currentUser } = useContext(AuthContext);
   const instance = useInstance();
   const { enqueueSnackbar } = useSnackbar();
   const [signList, setSignList] = useState([]);
   const [signListValue, setSignListvalue] = useState(null);
   const [revisi, setRevisi] = useState(false);
+  const [stampIdentity, setStampIdentity] = useState([]);
   const [alasanRevisi, setAlasanRevisi] = useState('');
 
   const formData = new FormData();
@@ -81,10 +87,10 @@ const Signatures = ({ filename }) => {
     const arr = new Uint8Array(data);
     const blob = new Blob([arr], { type: 'application/pdf' });
     formData.append('fileName', blob, doc.getFilename());
-    formData.append('old_filename', signListValue.filename);
+    formData.append('old_filename', rowdata?.filename);
     formData.append('status', 'Di Kirimkan');
     formData.append('status_eksekusi', currentUser.atribut === 'Pemaraf' ? 'Diparaf' : 'Di Tandatangani');
-    formData.append('status_level', String(signListValue.level_eksekusi + 1));
+    formData.append('status_level', String(rowdata?.level_eksekusi + 1));
     console.log(formData);
     const res = await API.post(process.env.REACT_APP_BACKEND + '/api/suratkeluar/sign', formData)
       .then((response) => {
@@ -122,8 +128,30 @@ const Signatures = ({ filename }) => {
       });
   };
 
+  const StampDocument = () => {
+    API.get(`/api/suratkeluar/stamp-document`, {
+      params: {
+        filename: filename,
+      },
+    })
+      .then((response) => {
+        if (response.data.status === 1) {
+          setStampIdentity(response.data.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleSign = async () => {
-    const QRSign = await QRCode.toDataURL(String(currentUser.nip))
+    const QRPayload = `${stampIdentity.map((item, index) => {
+      return item.nip_eksekutor;
+    })}`;
+
+    console.log(String(QRPayload.replaceAll(',', '|')));
+
+    const QRSign = await QRCode.toDataURL(QRPayload)
       .then((url) => {
         return url;
       })
@@ -138,21 +166,40 @@ const Signatures = ({ filename }) => {
       //   fieldName: annot.fieldName,
       // });
       // const stampAnnotPemaraf = new Annotations.StampAnnotation();
-      if (annot.fieldName === signListValue.annotation_field) {
-        const stampAnnot = new Annotations.StampAnnotation();
-        stampAnnot.PageNumber = 1;
-        stampAnnot.X = annot.getX();
-        stampAnnot.Y = annot.getY();
-        stampAnnot.Width = 100;
-        stampAnnot.Height = 100;
-        const keepAsSVG = false;
-        stampAnnot.setImageData(QRSign, keepAsSVG);
-        annotationManager.addAnnotation(stampAnnot);
-        annotationManager.redrawAnnotation(stampAnnot);
+      if (rowdata.atribut === 'Penanda Tangan') {
+        if (annot.fieldName === rowdata?.annotation_field) {
+          const stampAnnot = new Annotations.StampAnnotation();
+          stampAnnot.PageNumber = 1;
+          stampAnnot.X = annot.getX();
+          stampAnnot.Y = annot.getY();
+          stampAnnot.Width = 100;
+          stampAnnot.Height = 100;
+          const keepAsSVG = false;
+          stampAnnot.setImageData(QRSign, keepAsSVG);
+          annotationManager.addAnnotation(stampAnnot);
+          annotationManager.redrawAnnotation(stampAnnot);
+          enqueueSnackbar('File Berhasil Di Sign, Silahkan Klik Selesai Untuk Menyelesaikan Penanda Tanganan !!', {
+            variant: 'success',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+        }
+      } else {
+        enqueueSnackbar('File Berhasil Di Sign, Silahkan Klik Send Untuk Mengirim Ke Penerima Dokumen Berikutnya !!', {
+          variant: 'success',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
       }
     });
     const fieldManager = annotationManager.getFieldManager();
-    const field = fieldManager.getField(signListValue.annotation_field);
+    const field = fieldManager.getField(rowdata?.annotation_field);
     annotationManager.deleteAnnotations(field.widgets);
   };
 
@@ -173,26 +220,21 @@ const Signatures = ({ filename }) => {
       });
   };
 
-  useEffect(() => {
-    getSignList();
+  const lihatDokumen = () => {
     instance.UI.loadDocument(`${process.env.REACT_APP_BACKEND}/uploads/${filename}`);
+  };
+
+  useLayoutEffect(() => {
+    getSignList();
+    StampDocument();
   }, []);
   return (
     <>
       <Stack marginBottom={4} direction="column" spacing={1}>
-        {/* <Autocomplete
-          fullWidth
-          options={signList.filter((item) => item.level_eksekusi === item.status_level)}
-          value={signListValue}
-          getOptionLabel={(option) => option.judul}
-          isOptionEqualToValue={(option, value) => option.judul === value.judul}
-          onChange={async (e, v) => {
-            setSignListvalue(v);
-            instance.UI.loadDocument(`${process.env.REACT_APP_BACKEND}/uploads/${v.filename}`);
-          }}
-          renderInput={(props) => <TextField {...props} variant="standard" label="List Dokumen" />}
-        /> */}
         <Stack direction="row" spacing={1}>
+          <Button startIcon={<VisibilityOutlined />} onClick={lihatDokumen} variant="contained" color="inherit">
+            Lihat Dokumen
+          </Button>
           <Button startIcon={<CheckCircleOutlined />} onClick={handleSign} variant="contained" color="primary">
             Sign
           </Button>

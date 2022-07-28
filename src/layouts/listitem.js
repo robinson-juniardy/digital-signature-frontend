@@ -29,6 +29,21 @@ const roleMenu = [
         path: '/es/home',
         icon: <Icons.HomeOutlined />,
       },
+      {
+        title: 'Arsip',
+        path: '/es/arsip',
+        icon: <Icons.ArchiveOutlined />,
+      },
+      {
+        title: 'Surat Masuk',
+        path: '/es/suratmasuk',
+        icon: <Icons.InboxOutlined />,
+      },
+      {
+        title: 'Surat Keluar',
+        path: '/es/suratkeluar',
+        icon: <Icons.OutboxOutlined />,
+      },
       // {
       //   title: 'Disposisi Selesai',
       //   path: '/es/arsip/disposisi/selesai',
@@ -45,10 +60,21 @@ const roleMenu = [
         icon: <Icons.HomeOutlined />,
       },
       {
-        title: 'Surat',
-        path: '/staff/surat',
+        title: 'Arsip',
+        path: '/staff/arsip',
+        icon: <Icons.ArchiveOutlined />,
+      },
+      {
+        title: 'Surat Masuk',
+        path: '/staff/suratmasuk',
         icon: <Icons.InboxOutlined />,
       },
+      {
+        title: 'Surat Keluar',
+        path: '/staff/suratkeluar',
+        icon: <Icons.OutboxOutlined />,
+      },
+
       // {
       //   title: 'Disposisi Selesai',
       //   path: '/es/arsip/disposisi/selesai',
@@ -63,6 +89,12 @@ const roleMenu = [
         title: 'Home',
         path: '/admin/home',
         icon: <Icons.HomeOutlined />,
+      },
+
+      {
+        title: 'Arsip',
+        path: '/admin/arsip',
+        icon: <Icons.ArchiveOutlined />,
       },
       {
         title: 'Surat Masuk',
@@ -90,6 +122,11 @@ const roleMenu = [
         icon: <Icons.HomeOutlined />,
       },
       {
+        title: 'Arsip',
+        path: '/operator/arsip',
+        icon: <Icons.ArchiveOutlined />,
+      },
+      {
         title: 'Surat Masuk',
         path: '/operator/suratmasuk',
         icon: <Icons.InboxOutlined />,
@@ -110,9 +147,19 @@ const roleMenu = [
         icon: <Icons.HomeOutlined />,
       },
       {
-        title: 'Surat',
-        path: '/es/surat',
+        title: 'Arsip',
+        path: '/es/arsip',
+        icon: <Icons.ArchiveOutlined />,
+      },
+      {
+        title: 'Surat Masuk',
+        path: '/es/suratmasuk',
         icon: <Icons.InboxOutlined />,
+      },
+      {
+        title: 'Surat Keluar',
+        path: '/es/suratkeluar',
+        icon: <Icons.OutboxOutlined />,
       },
     ],
   },
@@ -125,9 +172,19 @@ const roleMenu = [
         icon: <Icons.HomeOutlined />,
       },
       {
-        title: 'Surat',
-        path: '/opd/surat',
+        title: 'Arsip',
+        path: '/opd/arsip',
+        icon: <Icons.ArchiveOutlined />,
+      },
+      {
+        title: 'Surat Masuk',
+        path: '/opd/suratmasuk',
         icon: <Icons.InboxOutlined />,
+      },
+      {
+        title: 'Surat Keluar',
+        path: '/opd/suratkeluar',
+        icon: <Icons.OutboxOutlined />,
       },
     ],
   },

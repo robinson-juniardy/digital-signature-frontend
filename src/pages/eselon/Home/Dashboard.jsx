@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 import React, { useState, useEffect, useContext } from 'react';
 import API from '../../../hook/API';
 import * as Icons from '@mui/icons-material';
@@ -6,8 +7,10 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import { Card, Divider, Stack, Typography } from '@mui/material';
+import AuthContext from '../../../context/auth';
 
 const Dashboard = () => {
+  const { currentUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [data, setData] = useState(null);
   const [arsip, setArsip] = useState(0);
@@ -29,7 +32,7 @@ const Dashboard = () => {
   };
 
   const getArsip = () => {
-    API.get('/api/suratmasuk/arsip/')
+    API.get('/api/suratmasuk/arsip/' + currentUser.nip)
       .then((response) => {
         setArsip(response.data.data.length);
       })

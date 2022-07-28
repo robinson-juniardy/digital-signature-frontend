@@ -1,3 +1,4 @@
+/* eslint-disable no-unneeded-ternary */
 /* eslint-disable dot-notation */
 /* eslint-disable no-else-return */
 /* eslint-disable no-useless-return */
@@ -17,6 +18,11 @@ import {
   Tooltip,
   IconButton,
   Divider,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import PropTypes from 'prop-types';
@@ -441,6 +447,8 @@ const DataManagement = () => {
       jabatan: null,
       role: null,
       atribut: null,
+      pemaraf: false,
+      penandatangan: false,
     },
     onSubmit: (values) => (editmode ? userUpdate(values) : userCreate(values)),
   });
@@ -630,14 +638,30 @@ const DataManagement = () => {
                         isOptionEqualToValue={(option, value) => option.role_name === value.role_name}
                         renderInput={(props) => <TextField {...props} label="Jabatan" variant="standard" />}
                       />
-                      <Autocomplete
-                        options={attrOptions}
-                        getOptionLabel={(option) => option.atribut}
-                        value={form.values.atribut}
-                        onChange={(e, v) => form.setFieldValue('atribut', v)}
-                        isOptionEqualToValue={(option, value) => option.atribut === value.atribut}
-                        renderInput={(props) => <TextField {...props} label="Atribut Khusus" variant="standard" />}
-                      />
+
+                      <FormControl component="fieldset" variant="standard">
+                        <FormLabel component="legend">Atribut Khusus</FormLabel>
+                        <FormGroup>
+                          <Stack direction="row" spacing={1}>
+                            <FormControlLabel
+                              label="Pemaraf"
+                              control={
+                                <Checkbox name="pemaraf" checked={form.values.pemaraf} onChange={form.handleChange} />
+                              }
+                            />
+                            <FormControlLabel
+                              label="Penanda Tangan"
+                              control={
+                                <Checkbox
+                                  name="penandatangan"
+                                  checked={form.values.penandatangan}
+                                  onChange={form.handleChange}
+                                />
+                              }
+                            />
+                          </Stack>
+                        </FormGroup>
+                      </FormControl>
                       <Stack direction="row" spacing={1}>
                         <Button startIcon={<Icon.SaveTwoTone />} variant="contained" color="primary" type="submit">
                           {editmode ? 'Simpan perubahan' : 'Simpan'}
@@ -698,7 +722,7 @@ const DataManagement = () => {
                         filter
                         filterElement={roleRowFilterTemplate}
                       ></Column>
-                      <Column
+                      {/* <Column
                         field="atribut"
                         header="Atribut Khusus"
                         filterMenuStyle={{ width: '14rem' }}
@@ -706,9 +730,35 @@ const DataManagement = () => {
                         showFilterMenu={false}
                         filter
                         filterElement={statusRowFilterTemplate}
+                      /> */}
+                      <Column
+                        align="center"
+                        alignHeader="center"
+                        field="paraf"
+                        header="Paraf"
+                        body={(row) => {
+                          if (row.paraf === 1) {
+                            return <Icon.CheckCircleOutline color="success" />;
+                          } else {
+                            return <Icon.CancelOutlined color="error" />;
+                          }
+                        }}
                       />
                       <Column
-                        header="Actions"
+                        align="center"
+                        alignHeader="center"
+                        field="tandatangan"
+                        header="TTD"
+                        body={(row) => {
+                          if (row.tandatangan === 1) {
+                            return <Icon.CheckCircleOutline color="success" />;
+                          } else {
+                            return <Icon.CancelOutlined color="error" />;
+                          }
+                        }}
+                      />
+                      <Column
+                        // header="Actions"
                         body={(row) => {
                           return (
                             <Stack direction="row" spacing={2}>
@@ -720,6 +770,8 @@ const DataManagement = () => {
                                       nip: row.nip,
                                       jabatan: jabatanData.find((item) => item.id === row.jabatan),
                                       nama: row.nama,
+                                      pemaraf: row.pemaraf === 1 ? true : false,
+                                      penandatangan: row.tandatangan === 1 ? true : false,
                                       atribut:
                                         row.atribut !== null
                                           ? attrOptions.find((item) => item.atribut === row.atribut)

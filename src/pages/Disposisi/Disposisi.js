@@ -276,6 +276,10 @@ const DisposisiComponent = ({ open, setOpen, filename, rows }) => {
       });
   };
 
+  useEffect(() => {
+    setUsers([]);
+  }, [open]);
+
   return (
     <Dialog fullScreen open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
       <AppBar sx={{ position: 'relative' }}>
@@ -413,20 +417,23 @@ const DisposisiComponent = ({ open, setOpen, filename, rows }) => {
                   </>
                 )}
               </Stack>
-              <Stack sx={{ width: '50%' }} direction="column" spacing={1}>
-                <Autocomplete
-                  options={users.filter((item) => item.disposision_level === currentUser.disposision_level - 1)}
-                  getOptionLabel={(option) => option.nama}
-                  onChange={(e, v) => {
-                    setDisposisiValue(v?.id);
-                  }}
-                  isOptionEqualToValue={(option, value) => option.nama === value.nama}
-                  renderInput={(props) => <TextField {...props} variant="standard" label="User Untuk Disposisi" />}
-                />
-                <Button onClick={handleDisposisi} variant="contained" color="primary" startIcon={<SwitchAccount />}>
-                  Disposisikan
-                </Button>
-              </Stack>
+              {users.length > 0 && (
+                <Stack sx={{ width: '50%' }} direction="column" spacing={1}>
+                  <Autocomplete
+                    options={users.filter((item) => item.disposision_level === currentUser.disposision_level - 1)}
+                    getOptionLabel={(option) => option.nama}
+                    onChange={(e, v) => {
+                      setDisposisiValue(v?.id);
+                    }}
+                    isOptionEqualToValue={(option, value) => option.nama === value.nama}
+                    renderInput={(props) => <TextField {...props} variant="standard" label="User Untuk Disposisi" />}
+                  />
+                  <Button onClick={handleDisposisi} variant="contained" color="primary" startIcon={<SwitchAccount />}>
+                    Disposisikan
+                  </Button>
+                </Stack>
+              )}
+
               <WebViewerComponent />
             </Stack>
           </Grid>

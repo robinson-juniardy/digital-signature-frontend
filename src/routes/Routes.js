@@ -11,6 +11,13 @@ import PrivateRoute from '../components/guard/PrivateRoute';
 import PublicRoute from '../components/guard/PublicRoute';
 import OpdHome from '../pages/ka_opd/Home';
 import DataManagement from '../pages/admin/management/DataManagement';
+import AdminArsip from '../pages/admin/arsip/AdminArsip';
+import OperatorArsip from '../pages/operator/arsip/OperatorArsip';
+import OpdArsip from '../pages/ka_opd/arsip/OpdArsip';
+import EselonArsip from '../pages/eselon/arsip/EselonArsip';
+import StaffArsip from '../pages/staff/arsip/StaffArsip';
+import SuratMasukComponent from '../pages/components/SuratMasukComponent';
+import SuratKeluarComponent from '../pages/components/SuratKeluarComponent';
 
 const Routes = () => {
   return useRoutes([
@@ -25,6 +32,11 @@ const Routes = () => {
             {
               path: 'home',
               element: <OperatorHome />,
+              //   index: true,
+            },
+            {
+              path: 'arsip',
+              element: <OperatorArsip />,
               //   index: true,
             },
             {
@@ -50,6 +62,11 @@ const Routes = () => {
             {
               path: 'home',
               element: <AdminHome />,
+              //   index: true,
+            },
+            {
+              path: 'arsip',
+              element: <AdminArsip />,
               //   index: true,
             },
             {
@@ -82,8 +99,17 @@ const Routes = () => {
               //   index: true,
             },
             {
-              path: 'surat',
-              element: <SuratMasuk />,
+              path: 'arsip',
+              element: <StaffArsip />,
+              //   index: true,
+            },
+            {
+              path: 'suratmasuk',
+              element: <SuratMasukComponent />,
+            },
+            {
+              path: 'suratkeluar',
+              element: <SuratKeluarComponent />,
             },
           ],
         },
@@ -103,8 +129,16 @@ const Routes = () => {
               //   index: true,
             },
             {
-              path: 'surat',
-              element: <SuratMasuk />,
+              path: 'arsip',
+              element: <EselonArsip />,
+            },
+            {
+              path: 'suratmasuk',
+              element: <SuratMasukComponent />,
+            },
+            {
+              path: 'suratkeluar',
+              element: <SuratKeluarComponent />,
             },
           ],
         },
@@ -124,8 +158,16 @@ const Routes = () => {
               //   index: true,
             },
             {
-              path: 'surat',
-              element: <SuratMasuk />,
+              path: 'arsip',
+              element: <OpdArsip />,
+            },
+            {
+              path: 'suratmasuk',
+              element: <SuratMasukComponent />,
+            },
+            {
+              path: 'suratkeluar',
+              element: <SuratKeluarComponent />,
             },
           ],
         },

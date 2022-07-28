@@ -185,35 +185,6 @@ const AdminHome = () => {
           <PrimeCharts />
           {/* </Card> */}
         </Grid>
-        <Grid item xs={12} md={12} lg={12}>
-          <Box sx={{ bgcolor: 'background.paper', width: '100%' }}>
-            <AppBar position="static">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="secondary"
-                textColor="inherit"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="Data Surat Keluar" {...a11yProps(0)} />
-                <Tab label="Data Surat Masuk" {...a11yProps(1)} />
-              </Tabs>
-            </AppBar>
-            <SwipeableViews
-              axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-              index={value}
-              onChangeIndex={handleChangeIndex}
-            >
-              <TabPanel value={value} index={0} dir={theme.direction}>
-                <SuratKeluarTable />
-              </TabPanel>
-              <TabPanel value={value} index={1} dir={theme.direction}>
-                <SuratMasukTable />
-              </TabPanel>
-            </SwipeableViews>
-          </Box>
-        </Grid>
       </Grid>
     </>
   );

@@ -26,6 +26,7 @@ import API from '../hook/API';
 import AuthContext from '../context/auth';
 import { LoadingButton } from '@mui/lab';
 import * as Icon from '@mui/icons-material';
+import Logo from '../assets/image/logo.png';
 
 const Login = () => {
   const { setCurrentUser, curretUser } = useContext(AuthContext);
@@ -53,6 +54,8 @@ const Login = () => {
             localStorage.setItem('nama', response.data.data[0].nama);
             localStorage.setItem('disposision_level', response.data.data[0].disposision_level);
             localStorage.setItem('atribut', response.data.data[0].atribut);
+            localStorage.setItem('paraf', response.data.data[0].paraf);
+            localStorage.setItem('ttd', response.data.data[0].tandatangan);
             setCurrentUser({
               role: response.data.data[0].role,
               id: response.data.data[0].id,
@@ -61,6 +64,8 @@ const Login = () => {
               nama: response.data.data[0].nama,
               disposision_level: response.data.data[0].disposision_level,
               atribut: response.data.data[0].atribut,
+              paraf: response.data.data[0].paraf,
+              ttd: response.data.data[0].tandatangan,
             });
             enqueueSnackbar('Login Berhasil', {
               variant: 'success',
@@ -117,11 +122,7 @@ const Login = () => {
         <Grid alignContent="center" container spacing={1}>
           <Grid item xs={12} md={8} lg={8}>
             <center>
-              <img
-                alt="logo"
-                style={{ width: '30%', marginLeft: 230, marginTop: 100 }}
-                src="http://3.bp.blogspot.com/-oyVAqr_jPO0/VPQg3SFuDhI/AAAAAAAABf4/JfHnifpVdzk/s1600/Logo%2BKabupaten%2BRaja%2BAmpat%2C%2BPapua%2BBarat.png"
-              />
+              <img alt="logo" style={{ width: '30%', marginLeft: 230, marginTop: 100 }} src={Logo} />
             </center>
 
             <Card
