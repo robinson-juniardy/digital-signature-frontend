@@ -107,6 +107,9 @@ const DataManagement = () => {
   const [selectedRoles, setSelectedRoles] = useState(null);
   const [deleteRolesDialog, setDeleteRolesDialog] = useState(false);
 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [deleteUserDialog, setDeleteUserDialog] = useState(false);
+
   const AtributKhusus = ['Pemaraf', 'Penanda Tangan'];
   const Jabatan = ['KA.OPD', 'ESELON 3', 'ESELON 4', 'STAFF'];
 
@@ -351,6 +354,46 @@ const DataManagement = () => {
       });
   };
 
+  const userDelete = () => {
+    console.log(selectedUser);
+    API.delete('/api/users/delete', { data: { id: selectedUser } })
+      .then((response) => {
+        if (response.data.status === 1) {
+          enqueueSnackbar('Data Berhasil Di Hapus', {
+            variant: 'success',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+          setDeleteUserDialog(false)
+          setSelectedUser(null);
+          getUsers();
+        } else {
+          enqueueSnackbar(response.data.message, {
+            variant: 'error',
+            autoHideDuration: 3000,
+            anchorOrigin: {
+              vertical: 'bottom',
+              horizontal: 'left',
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        enqueueSnackbar('Data Gagal Di Hapus', {
+          variant: 'error',
+          autoHideDuration: 3000,
+          anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'left',
+          },
+        });
+      });
+  };
+
   const userCreate = (values) => {
     API.post('/api/users/create', { ...values })
       .then((response) => {
@@ -444,7 +487,7 @@ const DataManagement = () => {
       nip: '',
       password: '',
       nama: '',
-      jabatan: null,
+      jabatan: '',
       role: null,
       atribut: null,
       pemaraf: false,
@@ -530,6 +573,11 @@ const DataManagement = () => {
     setDeleteRolesDialog(false);
   }
 
+  const hideDeleteUserDialog = () => {
+    setDeleteUserDialog(false);
+    setSelectedUser(null);
+  }
+
   const deleteProductDialogFooter = (
     <>
       <Button startIcon={<Icon.Close />} variant="text" color="primary" onClick={hideDeleteProductDialog}>
@@ -541,10 +589,21 @@ const DataManagement = () => {
     </>
   );
 
+  const deleteUserDialogFooter = (
+    <>
+      <Button startIcon={<Icon.Close />} variant="text" color="primary" onClick={hideDeleteUserDialog}>
+        NO
+      </Button>
+      <Button startIcon={<Icon.Check />} variant="text" color="primary" onClick={userDelete}>
+        YES
+      </Button>
+    </>
+  );
+
   useEffect(() => {
     getUsers();
     getRoles();
-    getJabatan();
+    // getJabatan();
   }, []);
 
   return (
@@ -622,6 +681,20 @@ const DataManagement = () => {
                           ),
                         }}
                       />
+                      <TextField
+                        label="Jabatan"
+                        variant="standard"
+                        name="jabatan"
+                        value={form.values.jabatan}
+                        onChange={form.handleChange}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Icon.AccountTree color="primary" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
                       <Autocomplete
                         options={roleOptions}
                         getOptionLabel={(option) => option.role}
@@ -629,14 +702,6 @@ const DataManagement = () => {
                         onChange={(e, v) => form.setFieldValue('role', v)}
                         isOptionEqualToValue={(option, value) => option.role === value.role}
                         renderInput={(props) => <TextField {...props} label="Role User" variant="standard" />}
-                      />
-                      <Autocomplete
-                        options={jabatanData}
-                        getOptionLabel={(option) => option.role_name}
-                        value={form.values.jabatan}
-                        onChange={(e, v) => form.setFieldValue('jabatan', v)}
-                        isOptionEqualToValue={(option, value) => option.role_name === value.role_name}
-                        renderInput={(props) => <TextField {...props} label="Jabatan" variant="standard" />}
                       />
 
                       <FormControl component="fieldset" variant="standard">
@@ -704,15 +769,7 @@ const DataManagement = () => {
                       {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
                       <Column filter filterPlaceholder="Search By Nip" field="nip" header="Nip" sortable></Column>
                       <Column filter filterPlaceholder="Search By Nama" field="nama" header="Nama" sortable></Column>
-                      <Column
-                        field="role_name"
-                        header="Jabatan"
-                        filterMenuStyle={{ width: '14rem' }}
-                        style={{ minWidth: '12rem' }}
-                        showFilterMenu={false}
-                        filter
-                        filterElement={JabatanRowFilterTemplate}
-                      ></Column>
+                      <Column filter filterPlaceholder="Search By Jabatan" field="jabatan" header="Jabatan" sortable></Column>
                       <Column
                         field="role"
                         header="Role"
@@ -768,7 +825,7 @@ const DataManagement = () => {
                                     setEditmode(true);
                                     form.setValues({
                                       nip: row.nip,
-                                      jabatan: jabatanData.find((item) => item.id === row.jabatan),
+                                      jabatan: row.jabatan,
                                       nama: row.nama,
                                       pemaraf: row.pemaraf === 1 ? true : false,
                                       penandatangan: row.tandatangan === 1 ? true : false,
@@ -785,7 +842,10 @@ const DataManagement = () => {
                                 </IconButton>
                               </Tooltip>
                               <Tooltip title="Hapus">
-                                <IconButton>
+                                <IconButton onClick={() => {
+                                  setDeleteUserDialog(true);
+                                  setSelectedUser(row.id);
+                                }}>
                                   <Icon.DeleteTwoTone color="error" />
                                 </IconButton>
                               </Tooltip>
@@ -798,6 +858,12 @@ const DataManagement = () => {
                 </div>
               </Card>
             </Grid>
+            <Dialog visible={deleteUserDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteUserDialogFooter} onHide={hideDeleteUserDialog}>
+              <div className="confirmation-content">
+                <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                Are you sure want to delete?
+              </div>
+            </Dialog>
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={1} dir={theme.direction}>
