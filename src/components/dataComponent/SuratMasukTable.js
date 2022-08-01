@@ -115,13 +115,51 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   const rowExpansionTemplate = (datax) => {
     return (
       <div className="orders-subtable">
+        <h5>Detail Surat Masuk</h5>
+        <DataTable value={[{ ...datax.detail[0] }]}>
+          <Column field="diperoleh_dari" header="Dari"></Column>
+          <Column field="baru_masuk" header="Kepada"></Column>
+          {/* <Column field="jabatan_diposisi" header="Jabatan"></Column>
+              <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
+              <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
+          <Column
+            field="status"
+            header="Status"
+            body={(row) => {
+              // if (row.status === null) {
+              if (row.status_dokumen === 'Outstanding') {
+                return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
+              }
+              if (row.status_dokumen === 'Di Proses') {
+                return <Badge value={row.status_dokumen} severity="warning"></Badge>;
+              }
+              if (row.status_dokumen === 'Diposisi') {
+                return <Badge value={row.status_dokumen} severity="info"></Badge>;
+              }
+              if (row.status_dokumen === 'Selesai Di Proses') {
+                return <Badge value={row.status_dokumen} severity="success"></Badge>;
+              }
+              if (row.status_dokumen === 'Disposisi Selesai') {
+                return <Badge value={row.status_dokumen} severity="success"></Badge>;
+              }
+            }}
+          ></Column>
+          <Column
+            field="tanggal_eksekusi"
+            header="Update At"
+            body={(row) => {
+              return `${row.tanggal_eksekusi.split('T')[0]}`;
+            }}
+          ></Column>
+        </DataTable>
         {datax.disposisi_id !== null ? (
           <>
-            <h5>Detail Timeline {datax.perihal_surat}</h5>
+            <h5>Detail Timeline Disposisi {datax.perihal_surat}</h5>
+
             <DataTable value={datax.detail}>
-              <Column field="nama_disposisi" header="Posisi Dokumen"></Column>
+              <Column field="nama_pendisposisi" header="Dari"></Column>
               {/* <Column field="jabatan_diposisi" header="Jabatan"></Column> */}
-              <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
+              <Column field="nama_disposisi" header="Kepada"></Column>
               {/* <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
               <Column
                 field="status"
@@ -171,8 +209,8 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
           <>
             <h5>Detail Timeline {datax.perihal_surat}</h5>
             <DataTable value={datax.detail}>
-              <Column field="diperoleh_dari" header="Posisi Dokumen Sebelumnya"></Column>
-              <Column field="baru_masuk" header="Posisi Dokumen Sekarang"></Column>
+              <Column field="diperoleh_dari" header="Dari"></Column>
+              <Column field="baru_masuk" header="Kepada"></Column>
               {/* <Column field="jabatan_diposisi" header="Jabatan"></Column>
               <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
               <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
@@ -182,7 +220,7 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
                 body={(row) => {
                   if (row.status === null) {
                     if (row.status_dokumen === 'Outstanding') {
-                      return <Badge value={row.status_dokumen} severity="info"></Badge>;
+                      return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
                     }
                     if (row.status_dokumen === 'Di Proses') {
                       return <Badge value={row.status_dokumen} severity="warning"></Badge>;

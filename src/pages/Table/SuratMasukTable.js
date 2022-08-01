@@ -121,7 +121,7 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
     return (
       <div className="orders-subtable">
         <h5>Detail Surat Masuk</h5>
-        <DataTable value={[{ ...datax.detail[0] }]}>
+        <DataTable value={[{ ...datax.detail[datax.detail.length - 1] }]}>
           <Column field="diperoleh_dari" header="Dari"></Column>
           <Column field="baru_masuk" header="Kepada"></Column>
           {/* <Column field="jabatan_diposisi" header="Jabatan"></Column>
@@ -130,42 +130,27 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
           <Column
             field="status"
             header="Status"
-            body={
-              (row) => {
-                // if (row.status === null) {
-                if (row.status_dokumen === 'Outstanding') {
-                  return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
-                }
-                if (row.status_dokumen === 'Di Proses') {
-                  return <Badge value={row.status_dokumen} severity="warning"></Badge>;
-                }
-                if (row.status_dokumen === 'Diposisi') {
-                  return <Badge value={row.status_dokumen} severity="info"></Badge>;
-                }
-                if (row.status_dokumen === 'Selesai Di Proses') {
-                  return <Badge value={row.status_dokumen} severity="success"></Badge>;
-                }
-                if (row.status_dokumen === 'Disposisi Selesai') {
-                  return <Badge value={row.status_dokumen} severity="success"></Badge>;
-                }
+            body={(row) => {
+              // if (row.status === null) {
+              if (row.status_dokumen === 'Outstanding') {
+                return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
               }
-
-              // else {
-              // if (row.status === 0) {
-              //   return <Badge value={'Belum Di Proses'} severity="danger"></Badge>;
-              // }
-              // if (row.status === 1) {
-              //   return <Badge value={'Di Proses'} severity="warning"></Badge>;
-              // }
-              // if (row.status === 2) {
-              //   return <Badge value={'Disposisi'} severity="info"></Badge>;
-              // }
-              // if (row.status === 3) {
-              //   return <Badge value={'Selesai'} severity="success"></Badge>;
-              // }
-              // }
-              // }
-            }
+              if (row.status_dokumen === 'Di Proses') {
+                return <Badge value={row.status_dokumen} severity="warning"></Badge>;
+              }
+              if (row.status_dokumen === 'Diposisi') {
+                return <Badge value={row.status_dokumen} severity="info"></Badge>;
+              }
+              if (row.status_dokumen === 'Disposisi Proses') {
+                return <Badge value={row.status_dokumen} severity="danger"></Badge>;
+              }
+              if (row.status_dokumen === 'Selesai Di Proses') {
+                return <Badge value={row.status_dokumen} severity="success"></Badge>;
+              }
+              if (row.status_dokumen === 'Disposisi Selesai') {
+                return <Badge value={row.status_dokumen} severity="success"></Badge>;
+              }
+            }}
           ></Column>
           <Column
             field="tanggal_eksekusi"
@@ -174,39 +159,22 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
               return `${row.tanggal_eksekusi.split('T')[0]}`;
             }}
           ></Column>
-          {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
-          {/* <Column field="status_jabatan" header="Jabatan" sortable></Column>
-          <Column
-            body={(option) => {
-              if (option.eksekusi === 'Di Proses') {
-                return <Badge value={option.eksekusi} severity="warning"></Badge>;
-              }
-              if (option.eksekusi === 'Menunggu Paraf') {
-                return <Badge value={option.eksekusi} severity="info"></Badge>;
-              }
-              if (option.eksekusi === 'Selesai') {
-                return <Badge value={option.eksekusi} severity="success"></Badge>;
-              }
-            }}
-            field="eksekusi"
-            header="Status Eksekusi"
-          ></Column> */}
         </DataTable>
         {datax.disposisi_id !== null ? (
           <>
             <h5>Detail Timeline Disposisi {datax.perihal_surat}</h5>
 
             <DataTable value={datax.detail}>
-              <Column field="nama_disposisi" header="Dari"></Column>
+              <Column field="nama_pendisposisi" header="Dari"></Column>
               {/* <Column field="jabatan_diposisi" header="Jabatan"></Column> */}
-              <Column field="nama_pendisposisi" header="Kepada"></Column>
+              <Column field="nama_disposisi" header="Kepada"></Column>
               {/* <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
               <Column
                 field="status"
                 header="Status"
                 body={(row) => {
                   if (row.status === 0) {
-                    return <Badge value={'Belum Di Proses'} severity="danger"></Badge>;
+                    return <Badge value={'Outstanding'} severity="danger"></Badge>;
                   }
                   if (row.status === 1) {
                     return <Badge value={'Di Proses'} severity="warning"></Badge>;
@@ -224,6 +192,29 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
                 header="Tanggal Disposisi"
                 body={(row) => {
                   return `${row.disposisi_time.split('T')[0]}`;
+                }}
+              ></Column>
+              <Column
+                // header=""
+                body={(row) => {
+                  if (row.disposisi_user === currentUser.id) {
+                    return (
+                      <Stack direction="row" spacing={2}>
+                        <Button
+                          onClick={() => {
+                            setFilename(row.filename);
+                            setRows(row);
+                            setOpen(true);
+                          }}
+                          startIcon={<DetailsOutlined />}
+                          variant="contained"
+                          color="warning"
+                        >
+                          Detail
+                        </Button>
+                      </Stack>
+                    );
+                  }
                 }}
               ></Column>
               {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
