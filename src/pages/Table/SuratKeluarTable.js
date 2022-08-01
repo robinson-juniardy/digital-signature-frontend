@@ -285,17 +285,14 @@ const SuratKeluarTable = React.memo(({ setFilename, setOpen, open, setRows }) =>
             showFilterMenu={false}
             filter
             body={(option) => {
-              if (option.status_eksekusi === 'Di Paraf') {
-                return <Badge value={option.status_eksekusi} severity="info"></Badge>;
+              if (option.eksekusi === 'Di Proses') {
+                return <Badge value={option.eksekusi} severity="warning"></Badge>;
               }
-              if (option.status_eksekusi === 'Di Tandatangani') {
-                return <Badge value={option.status_eksekusi} severity="success"></Badge>;
+              if (option.eksekusi === 'Menunggu Paraf') {
+                return <Badge value={option.eksekusi} severity="info"></Badge>;
               }
-              if (option.status_eksekusi === 'Di Proses') {
-                return <Badge value={option.status_eksekusi} severity="warning"></Badge>;
-              }
-              if (option.status_eksekusi === 'Di Kembalikan') {
-                return <Badge value={option.status_eksekusi} severity="danger"></Badge>;
+              if (option.eksekusi === 'Selesai') {
+                return <Badge value={option.eksekusi} severity="success"></Badge>;
               }
             }}
             filterElement={statusRowFilterTemplate}
