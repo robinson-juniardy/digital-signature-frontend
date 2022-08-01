@@ -13,6 +13,7 @@ const AuthProvider = ({ children }) => {
 
   const checkCurrentUsers = () => {
     const role = localStorage.getItem('role');
+    const role_id = localStorage.getItem('role_id');
     const id = localStorage.getItem('id');
     const nama = localStorage.getItem('nama');
     const jabatan = localStorage.getItem('jabatan');
@@ -23,6 +24,7 @@ const AuthProvider = ({ children }) => {
     const ttd = localStorage.getItem('ttd');
     if (id) {
       setCurrentUser({
+        role_id,
         role,
         id,
         nama,

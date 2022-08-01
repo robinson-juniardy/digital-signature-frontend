@@ -4,19 +4,16 @@ import React from 'react';
 import AuthContext from '../../context/auth';
 import { Navigate, Outlet } from 'react-router-dom';
 
-const PublicRoute = (props) => {
+const RoleRoute = (props) => {
   const { currentUser } = React.useContext(AuthContext);
-  console.log(currentUser);
   if (currentUser !== null) {
     const roles = currentUser.role_id;
 
     if (roles === 5) {
       return <Navigate to="/admin/home" />;
-    }
-    if (roles === 6) {
+    } else if (roles === 6) {
       return <Navigate to="/operator/home" />;
-    }
-    if (roles !== 5 || roles !== 6) {
+    } else {
       return <Navigate to="/main/home" />;
     }
   } else {
@@ -24,4 +21,4 @@ const PublicRoute = (props) => {
   }
 };
 
-export default PublicRoute;
+export default RoleRoute;

@@ -1,3 +1,5 @@
+/* eslint-disable no-else-return */
+/* eslint-disable no-empty */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-undef */
 /* eslint-disable react/jsx-fragments */
@@ -20,280 +22,219 @@ import AuthContext from '../context/auth';
 
 // const navigate = useNavigate();
 
-const roleMenu = [
+const MainMenu = [
   {
-    role: 'eselon_3',
-    children: [
-      {
-        title: 'Home',
-        path: '/es/home',
-        icon: <Icons.HomeOutlined />,
-      },
-      {
-        title: 'Arsip',
-        path: '/es/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/es/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/es/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-      // {
-      //   title: 'Disposisi Selesai',
-      //   path: '/es/arsip/disposisi/selesai',
-      //   icon: <AssignmentIcon />,
-      // },
-    ],
+    title: 'Home',
+    path: '/main/home',
+    icon: <Icons.HomeOutlined />,
   },
   {
-    role: 'staff',
-    children: [
-      {
-        title: 'Home',
-        path: '/staff/home',
-        icon: <Icons.HomeOutlined />,
-      },
-      {
-        title: 'Arsip',
-        path: '/staff/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/staff/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/staff/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-
-      // {
-      //   title: 'Disposisi Selesai',
-      //   path: '/es/arsip/disposisi/selesai',
-      //   icon: <AssignmentIcon />,
-      // },
-    ],
+    title: 'Arsip',
+    path: '/main/arsip',
+    icon: <Icons.ArchiveOutlined />,
   },
   {
-    role: 'admin',
-    children: [
-      {
-        title: 'Home',
-        path: '/admin/home',
-        icon: <Icons.HomeOutlined />,
-      },
-
-      {
-        title: 'Arsip',
-        path: '/admin/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/admin/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/admin/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-      {
-        title: 'Users Management',
-        path: '/admin/data-management',
-        icon: <Icons.AccountBoxOutlined />,
-      },
-    ],
+    title: 'Surat Masuk',
+    path: '/main/suratmasuk',
+    icon: <Icons.InboxOutlined />,
   },
   {
-    role: 'operator',
-    children: [
-      {
-        title: 'Home',
-        path: '/operator/home',
-        icon: <Icons.HomeOutlined />,
-      },
-      {
-        title: 'Arsip',
-        path: '/operator/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/operator/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/operator/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-    ],
-  },
-  {
-    role: 'eselon_4',
-    children: [
-      {
-        title: 'Home',
-        path: '/es/home',
-        icon: <Icons.HomeOutlined />,
-      },
-      {
-        title: 'Arsip',
-        path: '/es/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/es/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/es/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-    ],
-  },
-  {
-    role: 'ka_opd',
-    children: [
-      {
-        title: 'Home',
-        path: '/opd/home',
-        icon: <Icons.HomeOutlined />,
-      },
-      {
-        title: 'Arsip',
-        path: '/opd/arsip',
-        icon: <Icons.ArchiveOutlined />,
-      },
-      {
-        title: 'Surat Masuk',
-        path: '/opd/suratmasuk',
-        icon: <Icons.InboxOutlined />,
-      },
-      {
-        title: 'Surat Keluar',
-        path: '/opd/suratkeluar',
-        icon: <Icons.OutboxOutlined />,
-      },
-    ],
+    title: 'Surat Keluar',
+    path: '/main/suratkeluar',
+    icon: <Icons.OutboxOutlined />,
   },
 ];
 
+const OperatorMenu = [
+  {
+    title: 'Home',
+    path: '/operator/home',
+    icon: <Icons.HomeOutlined />,
+  },
+  {
+    title: 'Arsip',
+    path: '/operator/arsip',
+    icon: <Icons.ArchiveOutlined />,
+  },
+  {
+    title: 'Surat Masuk',
+    path: '/operator/suratmasuk',
+    icon: <Icons.InboxOutlined />,
+  },
+  {
+    title: 'Surat Keluar',
+    path: '/operator/suratkeluar',
+    icon: <Icons.OutboxOutlined />,
+  },
+];
+
+const AdminMenu = [
+  {
+    title: 'Home',
+    path: '/admin/home',
+    icon: <Icons.HomeOutlined />,
+  },
+
+  {
+    title: 'Arsip',
+    path: '/admin/arsip',
+    icon: <Icons.ArchiveOutlined />,
+  },
+  {
+    title: 'Surat Masuk',
+    path: '/admin/suratmasuk',
+    icon: <Icons.InboxOutlined />,
+  },
+  {
+    title: 'Surat Keluar',
+    path: '/admin/suratkeluar',
+    icon: <Icons.OutboxOutlined />,
+  },
+  {
+    title: 'Users Management',
+    path: '/admin/data-management',
+    icon: <Icons.AccountBoxOutlined />,
+  },
+];
+
+// const roleMenu = [
+//   {
+//     role: 'main',
+//     children: [
+
+//       // {
+//       //   title: 'Disposisi Selesai',
+//       //   path: '/es/arsip/disposisi/selesai',
+//       //   icon: <AssignmentIcon />,
+//       // },
+//     ],
+//   },
+//   {
+//     role: 5,
+//     children: [
+
+//     ],
+//   },
+//   {
+//     role: 6,
+//     children: [
+
+//     ],
+//   },
+// ];
+
 const ListItemsRole = () => {
-  const { currentUser } = React.useContext(AuthContext);
-  const roleItem = roleMenu.filter((menu) => menu.role === currentUser.role);
-  return (
-    <>
-      {roleItem[0].children.map((item, index) => (
-        <Tooltip placement="right-start" key={index} title={item.title}>
-          <NavLink
-            to={item.path}
-            style={{
-              textDecoration: 'none',
-              color: 'black',
+  const { currentUser, setCurrentUser } = React.useContext(AuthContext);
+  console.log(currentUser);
+  if (currentUser.role_id === 5) {
+    return (
+      <>
+        {AdminMenu.map((item, index) => (
+          <Tooltip placement="right-start" key={index} title={item.title}>
+            <NavLink
+              to={item.path}
+              style={{
+                textDecoration: 'none',
+                color: 'black',
+              }}
+            >
+              <ListItemButton>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItemButton>
+            </NavLink>
+          </Tooltip>
+        ))}
+        <Tooltip placement="right-start" title="Logout">
+          <ListItemButton
+            onClick={() => {
+              localStorage.clear();
+              setCurrentUser(null);
+              window.location.reload();
             }}
           >
-            <ListItemButton>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItemButton>
-          </NavLink>
+            <ListItemIcon>
+              <Icons.Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
         </Tooltip>
-      ))}
-
-      <Tooltip placement="right-start" title="Logout">
-        <ListItemButton
-          onClick={() => {
-            localStorage.clear();
-            window.location.reload();
-          }}
-        >
-          <ListItemIcon>
-            <Icons.Logout />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItemButton>
-      </Tooltip>
-    </>
-  );
+      </>
+    );
+  } else if (currentUser.role_id === 6) {
+    return (
+      <>
+        {OperatorMenu.map((item, index) => (
+          <Tooltip placement="right-start" key={index} title={item.title}>
+            <NavLink
+              to={item.path}
+              style={{
+                textDecoration: 'none',
+                color: 'black',
+              }}
+            >
+              <ListItemButton>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItemButton>
+            </NavLink>
+          </Tooltip>
+        ))}
+        <Tooltip placement="right-start" title="Logout">
+          <ListItemButton
+            onClick={() => {
+              localStorage.clear();
+              setCurrentUser(null);
+              window.location.reload();
+            }}
+          >
+            <ListItemIcon>
+              <Icons.Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </Tooltip>
+      </>
+    );
+  } else {
+    return (
+      <>
+        {MainMenu.map((item, index) => (
+          <Tooltip placement="right-start" key={index} title={item.title}>
+            <NavLink
+              to={item.path}
+              style={{
+                textDecoration: 'none',
+                color: 'black',
+              }}
+            >
+              <ListItemButton>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItemButton>
+            </NavLink>
+          </Tooltip>
+        ))}
+        <Tooltip placement="right-start" title="Logout">
+          <ListItemButton
+            onClick={() => {
+              localStorage.clear();
+              setCurrentUser(null);
+              window.location.reload();
+            }}
+          >
+            <ListItemIcon>
+              <Icons.Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </Tooltip>
+      </>
+    );
+  }
 };
 
-export const mainListItems = (
-  <ListItemsRole />
-  // <React.Fragment>
-  //   <NavLink
-  //     to="/operator/home"
-  //     style={{
-  //       textDecoration: 'none',
-  //       color: 'black',
-  //     }}
-  //   >
-  //     <ListItemButton>
-  //       <ListItemIcon>
-  //         <DashboardIcon />
-  //       </ListItemIcon>
-  //       <ListItemText primary="Dashboard" />
-  //     </ListItemButton>
-  //   </NavLink>
-
-  //   <NavLink
-  //     to="/operator/suratmasuk"
-  //     style={{
-  //       color: 'black',
-  //       textDecoration: 'none',
-  //     }}
-  //     //   style={({ isActive }) => {
-  //     //     isActive ? {  } : undefined;
-  //     //   }}
-  //   >
-  //     <ListItemButton>
-  //       <ListItemIcon>
-  //         <Icons.Mail />
-  //       </ListItemIcon>
-  //       <ListItemText primary="Surat Masuk" />
-  //     </ListItemButton>
-  //   </NavLink>
-
-  //   <NavLink
-  //     to={'/operator/suratkeluar'}
-  //     style={{
-  //       color: 'black',
-  //       textDecoration: 'none',
-  //     }}
-  //   >
-  //     <ListItemButton>
-  //       <ListItemIcon>
-  //         <Icons.SendAndArchive />
-  //       </ListItemIcon>
-  //       <ListItemText primary="Surat Keluar" />
-  //     </ListItemButton>
-  //   </NavLink>
-
-  //   {/* <ListItemButton>
-  //     <ListItemIcon>
-  //       <BarChartIcon />
-  //     </ListItemIcon>
-  //     <ListItemText primary="Reports" />
-  //   </ListItemButton>
-  //   <ListItemButton>
-  //     <ListItemIcon>
-  //       <LayersIcon />
-  //     </ListItemIcon>
-  //     <ListItemText primary="Integrations" />
-  //   </ListItemButton> */}
-  // </React.Fragment>
-);
+export const mainListItems = <ListItemsRole />;
 
 export const secondaryListItems = (
   <React.Fragment></React.Fragment>

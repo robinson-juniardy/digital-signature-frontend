@@ -45,9 +45,10 @@ const Login = () => {
         password,
       })
         .then((response) => {
-          console.log(response.data);
           if (response.data.status === 1) {
-            localStorage.setItem('role', response.data.data[0].role);
+            console.log(response.data.data);
+            localStorage.setItem('role_id', response.data.data[0].role_id);
+            localStorage.setItem('role', response.data.data[0].role_name);
             localStorage.setItem('id', response.data.data[0].id);
             localStorage.setItem('nip', response.data.data[0].nip);
             localStorage.setItem('jabatan', response.data.data[0].jabatan);
@@ -57,7 +58,8 @@ const Login = () => {
             localStorage.setItem('paraf', response.data.data[0].paraf);
             localStorage.setItem('ttd', response.data.data[0].tandatangan);
             setCurrentUser({
-              role: response.data.data[0].role,
+              role_id: response.data.data[0].role_id,
+              role: response.data.data[0].role_name,
               id: response.data.data[0].id,
               nip: response.data.data[0].nip,
               jabatan: response.data.data[0].jabatan,

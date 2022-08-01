@@ -53,13 +53,13 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
     setExpandedRows(null);
   };
 
-  const StatusEksekusi = ['Masuk Ke KA.OPD', 'Di Proses', 'Diposisi', 'Selesai Di Proses', 'Disposisi Selesai'];
+  const StatusEksekusi = ['Outstanding', 'Di Proses', 'Diposisi', 'Selesai Di Proses', 'Disposisi Selesai'];
 
   const getData = () => {
     API.get(
-      currentUser.role === 'ka_opd'
-        ? `/api/suratmasuk/suratmasuk-dan-disposisi`
-        : `/api/suratmasuk/suratmasuk-dan-disposisi/${currentUser.id}`
+      // currentUser.role === 'ka_opd'
+      `/api/suratmasuk/suratmasuk-dan-disposisi`
+      // : `/api/suratmasuk/suratmasuk-dan-disposisi/${currentUser.id}`
     )
       .then((response) => {
         setdata(response.data);
@@ -86,7 +86,7 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   };
 
   const statusItemTemplate = (option) => {
-    if (option === 'Masuk Ke KA.OPD') {
+    if (option === 'Outstanding') {
       return <Badge value={option} style={{ backgroundColor: '#CA82FF' }}></Badge>;
     }
     if (option === 'Di Proses') {
@@ -120,14 +120,87 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   const rowExpansionTemplate = (datax) => {
     return (
       <div className="orders-subtable">
-        {datax.disposisi_id !== null && (
-          <>
-            <h5>Timeline Tracking Dokumen {datax.perihal_surat}</h5>
-            <DataTable value={datax.detail}>
-              <Column field="nama_disposisi" header="Posisi Dokumen"></Column>
-              <Column field="jabatan_diposisi" header="Jabatan"></Column>
+        <h5>Detail Surat Masuk</h5>
+        <DataTable value={[{ ...datax.detail[0] }]}>
+          <Column field="diperoleh_dari" header="Dari"></Column>
+          <Column field="baru_masuk" header="Kepada"></Column>
+          {/* <Column field="jabatan_diposisi" header="Jabatan"></Column>
               <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
-              <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column>
+              <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
+          <Column
+            field="status"
+            header="Status"
+            body={
+              (row) => {
+                // if (row.status === null) {
+                if (row.status_dokumen === 'Outstanding') {
+                  return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
+                }
+                if (row.status_dokumen === 'Di Proses') {
+                  return <Badge value={row.status_dokumen} severity="warning"></Badge>;
+                }
+                if (row.status_dokumen === 'Diposisi') {
+                  return <Badge value={row.status_dokumen} severity="info"></Badge>;
+                }
+                if (row.status_dokumen === 'Selesai Di Proses') {
+                  return <Badge value={row.status_dokumen} severity="success"></Badge>;
+                }
+                if (row.status_dokumen === 'Disposisi Selesai') {
+                  return <Badge value={row.status_dokumen} severity="success"></Badge>;
+                }
+              }
+
+              // else {
+              // if (row.status === 0) {
+              //   return <Badge value={'Belum Di Proses'} severity="danger"></Badge>;
+              // }
+              // if (row.status === 1) {
+              //   return <Badge value={'Di Proses'} severity="warning"></Badge>;
+              // }
+              // if (row.status === 2) {
+              //   return <Badge value={'Disposisi'} severity="info"></Badge>;
+              // }
+              // if (row.status === 3) {
+              //   return <Badge value={'Selesai'} severity="success"></Badge>;
+              // }
+              // }
+              // }
+            }
+          ></Column>
+          <Column
+            field="tanggal_eksekusi"
+            header="Update At"
+            body={(row) => {
+              return `${row.tanggal_eksekusi.split('T')[0]}`;
+            }}
+          ></Column>
+          {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
+          {/* <Column field="status_jabatan" header="Jabatan" sortable></Column>
+          <Column
+            body={(option) => {
+              if (option.eksekusi === 'Di Proses') {
+                return <Badge value={option.eksekusi} severity="warning"></Badge>;
+              }
+              if (option.eksekusi === 'Menunggu Paraf') {
+                return <Badge value={option.eksekusi} severity="info"></Badge>;
+              }
+              if (option.eksekusi === 'Selesai') {
+                return <Badge value={option.eksekusi} severity="success"></Badge>;
+              }
+            }}
+            field="eksekusi"
+            header="Status Eksekusi"
+          ></Column> */}
+        </DataTable>
+        {datax.disposisi_id !== null ? (
+          <>
+            <h5>Detail Timeline Disposisi {datax.perihal_surat}</h5>
+
+            <DataTable value={datax.detail}>
+              <Column field="nama_disposisi" header="Dari"></Column>
+              {/* <Column field="jabatan_diposisi" header="Jabatan"></Column> */}
+              <Column field="nama_pendisposisi" header="Kepada"></Column>
+              {/* <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
               <Column
                 field="status"
                 header="Status"
@@ -148,13 +221,80 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
               ></Column>
               <Column
                 field="disposisi_time"
-                header="Tanggal"
+                header="Tanggal Disposisi"
                 body={(row) => {
-                  if (row.jabatan_disposisi_by === 'KA.OPD') {
-                    return `${row.disposisi_time.split('T')[0]} : ${row.disposisi_time.split('T')[1].split('.')[0]}`;
+                  return `${row.disposisi_time.split('T')[0]}`;
+                }}
+              ></Column>
+              {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
+              {/* <Column field="status_jabatan" header="Jabatan" sortable></Column>
+          <Column
+            body={(option) => {
+              if (option.eksekusi === 'Di Proses') {
+                return <Badge value={option.eksekusi} severity="warning"></Badge>;
+              }
+              if (option.eksekusi === 'Menunggu Paraf') {
+                return <Badge value={option.eksekusi} severity="info"></Badge>;
+              }
+              if (option.eksekusi === 'Selesai') {
+                return <Badge value={option.eksekusi} severity="success"></Badge>;
+              }
+            }}
+            field="eksekusi"
+            header="Status Eksekusi"
+          ></Column> */}
+            </DataTable>
+          </>
+        ) : (
+          <>
+            <h5>Detail Timeline {datax.perihal_surat}</h5>
+            <DataTable value={datax.detail}>
+              <Column field="diperoleh_dari" header="Dari"></Column>
+              <Column field="baru_masuk" header="Kepada"></Column>
+              {/* <Column field="jabatan_diposisi" header="Jabatan"></Column>
+              <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
+              <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column> */}
+              <Column
+                field="status"
+                header="Status"
+                body={(row) => {
+                  if (row.status === null) {
+                    if (row.status_dokumen === 'Outstanding') {
+                      return <Badge value={row.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
+                    }
+                    if (row.status_dokumen === 'Di Proses') {
+                      return <Badge value={row.status_dokumen} severity="warning"></Badge>;
+                    }
+                    if (row.status_dokumen === 'Diposisi') {
+                      return <Badge value={row.status_dokumen} severity="info"></Badge>;
+                    }
+                    if (row.status_dokumen === 'Selesai Di Proses') {
+                      return <Badge value={row.status_dokumen} severity="success"></Badge>;
+                    }
+                    if (row.status_dokumen === 'Disposisi Selesai') {
+                      return <Badge value={row.status_dokumen} severity="success"></Badge>;
+                    }
                   } else {
-                    return `${row.modified_time.split('T')[0]} : ${row.modified_time.split('T')[1].split('.')[0]}`;
+                    if (row.status === 0) {
+                      return <Badge value={'Belum Di Proses'} severity="danger"></Badge>;
+                    }
+                    if (row.status === 1) {
+                      return <Badge value={'Di Proses'} severity="warning"></Badge>;
+                    }
+                    if (row.status === 2) {
+                      return <Badge value={'Disposisi'} severity="info"></Badge>;
+                    }
+                    if (row.status === 3) {
+                      return <Badge value={'Selesai'} severity="success"></Badge>;
+                    }
                   }
+                }}
+              ></Column>
+              <Column
+                field="tanggal_eksekusi"
+                header="Update At"
+                body={(row) => {
+                  return `${row.tanggal_eksekusi.split('T')[0]}`;
                 }}
               ></Column>
               {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
@@ -217,7 +357,7 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
             showFilterMenu={false}
             filter
             body={(option) => {
-              if (option.status_dokumen === 'Masuk Ke KA.OPD') {
+              if (option.status_dokumen === 'Outstanding') {
                 return <Badge value={option.status_dokumen} style={{ backgroundColor: '#CA82FF' }}></Badge>;
               }
               if (option.status_dokumen === 'Di Proses') {

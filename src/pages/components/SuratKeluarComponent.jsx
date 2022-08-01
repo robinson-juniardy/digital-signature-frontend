@@ -30,7 +30,7 @@ const SuratKeluarComponent = () => {
           <Card sx={{ p: 3, mt: 10 }}>
             <Grid container spacing={2}>
               <Grid marginTop={7} item xs={12} md={8} lg={8}>
-                <Signatures filename={filename} />
+                <Signatures rowdata={rows} filename={filename} />
               </Grid>
               {/* <Grid marginTop={7} item xs={12} md={8} lg={4}>
                 <Sign />
@@ -42,7 +42,7 @@ const SuratKeluarComponent = () => {
       <Grid container spacing={1}>
         <Grid item xs={12} md={12} lg={12}>
           <h1>Surat Keluar</h1>
-          <SuratKeluarTable setOpen={setOpen} setfilename={setfilename} />
+          <SuratKeluarTable setRows={setRows} setOpen={setOpen} setFilename={setfilename} />
         </Grid>
       </Grid>
     </>

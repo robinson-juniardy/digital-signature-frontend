@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import * as Icons from '@mui/icons-material';
 import { useFormik, FormikProvider } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 // import SuratMasukTable from './SuratMasukTable';
 import API from '../../../hook/API';
 import { useSnackbar } from 'notistack';
@@ -27,8 +27,10 @@ import Charts from './Charts';
 import DataTable from 'react-data-table-component';
 import SuratMasukTable from '../../../components/dataComponent/SuratMasukTable';
 import PrimeCharts from '../../../components/dataComponent/PrimeCharts';
+import AuthContext from '../../../context/auth';
 
 const SuratMasuk = () => {
+  const { currentUser } = useContext(AuthContext);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [EditValue, setEditValue] = useState();
   const [surat, setSurat] = useState([]);
@@ -63,6 +65,7 @@ const SuratMasuk = () => {
       perihalSurat: '',
       jenisSurat: '',
       fileName: '',
+      created_by: currentUser.id,
     },
     onSubmit: (values) => {
       const formData = new FormData();

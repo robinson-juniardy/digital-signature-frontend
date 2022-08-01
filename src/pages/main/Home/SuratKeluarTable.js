@@ -12,6 +12,7 @@ import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { InputNumber } from 'primereact/inputnumber';
+import { Button } from 'primereact/button';
 import { ProgressBar } from 'primereact/progressbar';
 import { Calendar } from 'primereact/calendar';
 import { MultiSelect } from 'primereact/multiselect';
@@ -23,11 +24,10 @@ import AuthContext from '../../../context/auth';
 import { Badge } from 'primereact/badge';
 
 import API from '../../../hook/API';
-import { AppBar, Box, Button, IconButton, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { AppBar, Box, Tab, Tabs, Typography } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
-import { DetailsOutlined } from '@mui/icons-material';
 
-const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => {
+const SuratKeluarTable = React.memo(() => {
   const { currentUser } = React.useContext(AuthContext);
   const [data, setdata] = React.useState([]);
   const [expandedRows, setExpandedRows] = React.useState(null);
@@ -37,8 +37,8 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
     'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     representative: { value: null, matchMode: FilterMatchMode.IN },
     judul: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    perihal_surat: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    status_dokumen: { value: null, matchMode: FilterMatchMode.EQUALS },
+    perihal: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    status_eksekusi: { value: null, matchMode: FilterMatchMode.EQUALS },
     verified: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
 
@@ -53,10 +53,10 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
     setExpandedRows(null);
   };
 
-  const StatusEksekusi = ['Outstanding', 'Di Proses', 'Diposisi', 'Selesai Di Proses', 'Disposisi Selesai'];
+  const StatusEksekusi = ['Di Paraf', 'Di Tandatangani', 'Dikembalikan', 'Di Proses'];
 
   const getData = () => {
-    API.get(`/api/suratmasuk/suratmasuk-dan-disposisi`)
+    API.get(`/api/suratkeluar/temp-byid/${currentUser.id}`)
       .then((response) => {
         setdata(response.data);
       })
@@ -82,18 +82,16 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   };
 
   const statusItemTemplate = (option) => {
-    if (option === 'Outstanding') {
+    if (option === 'Di Paraf') {
       return <Badge value={option} severity="info"></Badge>;
+    } else if (option === 'Di Tandatangani') {
+      return <Badge value={option} severity="success"></Badge>;
     } else if (option === 'Di Proses') {
       return <Badge value={option} severity="warning"></Badge>;
-    } else if (option === 'Diposisi') {
-      return <Badge value={option} severity="info"></Badge>;
-    } else if (option === 'Selesai Di Proses') {
-      return <Badge value={option} severity="success"></Badge>;
-    } else if (option === 'Disposisi Selesai') {
-      return <Badge value={option} severity="success"></Badge>;
+    } else if (option === 'Di Kembalikan') {
+      return <Badge value={option} severity="danger"></Badge>;
     } else {
-      return <Badge value={option} severity="info"></Badge>;
+      return <Badge value={option} severity="danger"></Badge>;
     }
   };
 
@@ -114,23 +112,12 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   const rowExpansionTemplate = (datax) => {
     return (
       <div className="orders-subtable">
-        {datax.disposisi_id !== null && (
-          <>
-            <h5>Disposisi {datax.perihal_surat}</h5>
-            <DataTable value={datax.detail}>
-              <Column field="nama_disposisi" header="Posisi Dokumen"></Column>
-              <Column field="jabatan_diposisi" header="Jabatan"></Column>
-              <Column field="nama_pendisposisi" header="Disposisi Dari"></Column>
-              <Column field="jabatan_disposisi_by" header="Jabatan Pendisposisi"></Column>
-              <Column
-                field="disposisi_time"
-                header="Tanggal Disposisi"
-                body={(row) => {
-                  return `${row.disposisi_time.split('T')[0]}`;
-                }}
-              ></Column>
-              {/* <Column field="nama_eksekutor" header="Eksekutor" sortable></Column> */}
-              {/* <Column field="status_jabatan" header="Jabatan" sortable></Column>
+        <h5>Detail Dokumen {datax.judul}</h5>
+        <DataTable value={datax.detail}>
+          <Column field="atribut" header="Atribut" sortable></Column>
+          <Column field="level_eksekusi" header="Level Eksekutor" sortable></Column>
+          <Column field="nama_eksekutor" header="Eksekutor" sortable></Column>
+          <Column field="status_jabatan" header="Jabatan" sortable></Column>
           <Column
             body={(option) => {
               if (option.eksekusi === 'Di Proses') {
@@ -145,10 +132,8 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
             }}
             field="eksekusi"
             header="Status Eksekusi"
-          ></Column> */}
-            </DataTable>
-          </>
-        )}
+          ></Column>
+        </DataTable>
       </div>
     );
   };
@@ -162,73 +147,41 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
           rowExpansionTemplate={rowExpansionTemplate}
           dataKey="id_surat"
           resizableColumns
-          header="List Surat Masuk"
+          header="List Surat Keluar"
           filterDisplay="row"
           filters={filters2}
           paginator
           rows={10}
           rowsPerPageOptions={[10, 20, 50]}
           value={data}
-          footer="Berisikan Status Surat Masuk Beserta Detailnya"
+          footer="Berisikan Status Surat Keluar Beserta Detailnya"
           showGridlines
           responsiveLayout="scroll"
         >
           <Column expander style={{ width: '3em' }} />
-          <Column field="jenis_surat" header="Urgensi"></Column>
-          <Column filter filterPlaceholder="Search by perihal" field="perihal_surat" header="Perihal"></Column>
-          <Column
-            sortable
-            field="tanggal_terimasurat"
-            header="Tanggal Surat Masuk"
-            body={(row) => {
-              return `${row.tanggal_terimasurat.split('T')[0]}`;
-            }}
-          ></Column>
+          <Column filter filterPlaceholder="Search by judul" field="judul" header="Judul"></Column>
+          <Column filter filterPlaceholder="Search by perihal" field="perihal" header="Perihal"></Column>
           <Column field="filename" body={FilenameTemplate} header="File"></Column>
           <Column
             showFilterMenu={false}
             filter
             body={(option) => {
-              if (option.status_dokumen === 'Outstanding') {
-                return <Badge value={option.status_dokumen} severity="info"></Badge>;
+              if (option.status_eksekusi === 'Di Paraf') {
+                return <Badge value={option.status_eksekusi} severity="info"></Badge>;
               }
-              if (option.status_dokumen === 'Di Proses') {
-                return <Badge value={option.status_dokumen} severity="warning"></Badge>;
+              if (option.status_eksekusi === 'Di Tandatangani') {
+                return <Badge value={option.status_eksekusi} severity="success"></Badge>;
               }
-              if (option.status_dokumen === 'Diposisi') {
-                return <Badge value={option.status_dokumen} severity="info"></Badge>;
+              if (option.status_eksekusi === 'Di Proses') {
+                return <Badge value={option.status_eksekusi} severity="warning"></Badge>;
               }
-              if (option.status_dokumen === 'Selesai Di Proses') {
-                return <Badge value={option.status_dokumen} severity="success"></Badge>;
-              }
-              if (option.status_dokumen === 'Disposisi Selesai') {
-                return <Badge value={option.status_dokumen} severity="success"></Badge>;
+              if (option.status_eksekusi === 'Di Kembalikan') {
+                return <Badge value={option.status_eksekusi} severity="danger"></Badge>;
               }
             }}
             filterElement={statusRowFilterTemplate}
-            field="status_dokumen"
-            header="Status Dokumen"
-          ></Column>
-          <Column
-            header="Actions"
-            body={(row) => {
-              return (
-                <Stack direction="row" spacing={2}>
-                  <Button
-                    onClick={() => {
-                      setFilename(row.filename);
-                      setRows(row);
-                      setOpen(true);
-                    }}
-                    startIcon={<DetailsOutlined />}
-                    variant="contained"
-                    color="primary"
-                  >
-                    Cek
-                  </Button>
-                </Stack>
-              );
-            }}
+            field="status_eksekusi"
+            header="Status"
           ></Column>
         </DataTable>
       </div>
@@ -236,4 +189,4 @@ const SuratMasukTable = React.memo(({ open, setOpen, setFilename, setRows }) => 
   );
 });
 
-export default SuratMasukTable;
+export default SuratKeluarTable;

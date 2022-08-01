@@ -113,7 +113,7 @@ const DataManagement = () => {
   const AtributKhusus = ['Pemaraf', 'Penanda Tangan'];
   const Jabatan = ['KA.OPD', 'ESELON 3', 'ESELON 4', 'STAFF'];
 
-  const Role = ['admin', 'operator', 'ka_opd', 'eselon_3', 'eselon_4', 'staff'];
+  const Role = roles.map((item) => item.role_name);
 
   const statusFilterTemplate = (options) => {
     return (
@@ -367,7 +367,7 @@ const DataManagement = () => {
               horizontal: 'left',
             },
           });
-          setDeleteUserDialog(false)
+          setDeleteUserDialog(false);
           setSelectedUser(null);
           getUsers();
         } else {
@@ -484,6 +484,7 @@ const DataManagement = () => {
 
   const form = useFormik({
     initialValues: {
+      id: null,
       nip: '',
       password: '',
       nama: '',
@@ -544,15 +545,15 @@ const DataManagement = () => {
 
   const textEditor = (options) => {
     return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
-  }
+  };
 
   const textEditorNumber = (options) => {
     return <InputText type="number" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
-  }
+  };
 
   const onRowEditRoles = (e) => {
     rolesUpdate(e.newData);
-  }
+  };
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -562,21 +563,21 @@ const DataManagement = () => {
         </IconButton>
       </>
     );
-  }
+  };
 
   const confirmDeleteRoles = (roles) => {
     setSelectedRoles(roles);
     setDeleteRolesDialog(true);
-  }
+  };
 
   const hideDeleteProductDialog = () => {
     setDeleteRolesDialog(false);
-  }
+  };
 
   const hideDeleteUserDialog = () => {
     setDeleteUserDialog(false);
     setSelectedUser(null);
-  }
+  };
 
   const deleteProductDialogFooter = (
     <>
@@ -636,7 +637,6 @@ const DataManagement = () => {
                   <form onSubmit={form.handleSubmit} onReset={form.handleReset}>
                     <Stack direction="column" spacing={1}>
                       <TextField
-                        disabled={editmode && true}
                         label="Nomor Induk Pegawai"
                         variant="standard"
                         name="nip"
@@ -652,7 +652,6 @@ const DataManagement = () => {
                       />
 
                       <TextField
-                        disabled={editmode && true}
                         type="password"
                         label="Password"
                         variant="standard"
@@ -696,11 +695,11 @@ const DataManagement = () => {
                         }}
                       />
                       <Autocomplete
-                        options={roleOptions}
-                        getOptionLabel={(option) => option.role}
+                        options={roles}
+                        getOptionLabel={(option) => option.role_name}
                         value={form.values.role}
                         onChange={(e, v) => form.setFieldValue('role', v)}
-                        isOptionEqualToValue={(option, value) => option.role === value.role}
+                        isOptionEqualToValue={(option, value) => option.role_name === value.role_name}
                         renderInput={(props) => <TextField {...props} label="Role User" variant="standard" />}
                       />
 
@@ -769,9 +768,15 @@ const DataManagement = () => {
                       {/* <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column> */}
                       <Column filter filterPlaceholder="Search By Nip" field="nip" header="Nip" sortable></Column>
                       <Column filter filterPlaceholder="Search By Nama" field="nama" header="Nama" sortable></Column>
-                      <Column filter filterPlaceholder="Search By Jabatan" field="jabatan" header="Jabatan" sortable></Column>
                       <Column
-                        field="role"
+                        // filter
+                        // filterPlaceholder="Search By Jabatan"
+                        field="jabatan"
+                        header="Jabatan"
+                        sortable
+                      ></Column>
+                      <Column
+                        field="role_name"
                         header="Role"
                         filterMenuStyle={{ width: '14rem' }}
                         style={{ minWidth: '12rem' }}
@@ -824,17 +829,19 @@ const DataManagement = () => {
                                   onClick={() => {
                                     setEditmode(true);
                                     form.setValues({
+                                      id: row.id,
                                       nip: row.nip,
                                       jabatan: row.jabatan,
                                       nama: row.nama,
-                                      pemaraf: row.pemaraf === 1 ? true : false,
+                                      password: row.password,
+                                      pemaraf: row.paraf === 1 ? true : false,
                                       penandatangan: row.tandatangan === 1 ? true : false,
                                       atribut:
                                         row.atribut !== null
                                           ? attrOptions.find((item) => item.atribut === row.atribut)
                                           : null,
                                       //   password: row.password,
-                                      role: roleOptions.find((item) => item.value === row.role),
+                                      role: roles.find((item) => item.role_name === row.role_name),
                                     });
                                   }}
                                 >
@@ -842,10 +849,12 @@ const DataManagement = () => {
                                 </IconButton>
                               </Tooltip>
                               <Tooltip title="Hapus">
-                                <IconButton onClick={() => {
-                                  setDeleteUserDialog(true);
-                                  setSelectedUser(row.id);
-                                }}>
+                                <IconButton
+                                  onClick={() => {
+                                    setDeleteUserDialog(true);
+                                    setSelectedUser(row.id);
+                                  }}
+                                >
                                   <Icon.DeleteTwoTone color="error" />
                                 </IconButton>
                               </Tooltip>
@@ -858,7 +867,14 @@ const DataManagement = () => {
                 </div>
               </Card>
             </Grid>
-            <Dialog visible={deleteUserDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteUserDialogFooter} onHide={hideDeleteUserDialog}>
+            <Dialog
+              visible={deleteUserDialog}
+              style={{ width: '450px' }}
+              header="Confirm"
+              modal
+              footer={deleteUserDialogFooter}
+              onHide={hideDeleteUserDialog}
+            >
               <div className="confirmation-content">
                 <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                 Are you sure want to delete?
@@ -919,9 +935,23 @@ const DataManagement = () => {
                       onRowEditComplete={onRowEditRoles}
                       rowsPerPageOptions={[10, 25, 50]}
                     >
-                      <Column field="role_name" header="Role" editor={(options) => textEditor(options)} sortable></Column>
-                      <Column field="disposision_level" header="Level Disposisi" editor={(options) => textEditorNumber(options)} sortable></Column>
-                      <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
+                      <Column
+                        field="role_name"
+                        header="Role"
+                        editor={(options) => textEditor(options)}
+                        sortable
+                      ></Column>
+                      <Column
+                        field="disposision_level"
+                        header="Level Disposisi"
+                        editor={(options) => textEditorNumber(options)}
+                        sortable
+                      ></Column>
+                      <Column
+                        rowEditor
+                        headerStyle={{ width: '10%', minWidth: '8rem' }}
+                        bodyStyle={{ textAlign: 'center' }}
+                      ></Column>
                       <Column body={actionBodyTemplate} style={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                   </div>
@@ -929,10 +959,22 @@ const DataManagement = () => {
               </Card>
             </Grid>
           </Grid>
-          <Dialog visible={deleteRolesDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+          <Dialog
+            visible={deleteRolesDialog}
+            style={{ width: '450px' }}
+            header="Confirm"
+            modal
+            footer={deleteProductDialogFooter}
+            onHide={hideDeleteProductDialog}
+          >
             <div className="confirmation-content">
               <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-              {selectedRoles && <span>Are you sure you want to delete Role Name : <b>{selectedRoles.role_name}</b> and Disposision Level = <b>{selectedRoles.disposision_level}</b>?</span>}
+              {selectedRoles && (
+                <span>
+                  Are you sure you want to delete Role Name : <b>{selectedRoles.role_name}</b> and Disposision Level ={' '}
+                  <b>{selectedRoles.disposision_level}</b>?
+                </span>
+              )}
             </div>
           </Dialog>
         </TabPanel>

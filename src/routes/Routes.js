@@ -18,6 +18,8 @@ import EselonArsip from '../pages/eselon/arsip/EselonArsip';
 import StaffArsip from '../pages/staff/arsip/StaffArsip';
 import SuratMasukComponent from '../pages/components/SuratMasukComponent';
 import SuratKeluarComponent from '../pages/components/SuratKeluarComponent';
+import MainHome from '../pages/main/Home';
+import MainArsip from '../pages/main/arsip/MainArsip';
 
 const Routes = () => {
   return useRoutes([
@@ -85,81 +87,23 @@ const Routes = () => {
         },
       ],
     },
+
     {
-      path: '/staff',
+      path: '/main',
       element: <PrivateRoute />,
       children: [
         {
-          path: '/staff',
+          path: '/main',
           element: <MainLayout />,
           children: [
             {
               path: 'home',
-              element: <EselonHome />,
+              element: <MainHome />,
               //   index: true,
             },
             {
               path: 'arsip',
-              element: <StaffArsip />,
-              //   index: true,
-            },
-            {
-              path: 'suratmasuk',
-              element: <SuratMasukComponent />,
-            },
-            {
-              path: 'suratkeluar',
-              element: <SuratKeluarComponent />,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      path: '/es',
-      element: <PrivateRoute />,
-      children: [
-        {
-          path: '/es',
-          element: <MainLayout />,
-          children: [
-            {
-              path: 'home',
-              element: <EselonHome />,
-              //   index: true,
-            },
-            {
-              path: 'arsip',
-              element: <EselonArsip />,
-            },
-            {
-              path: 'suratmasuk',
-              element: <SuratMasukComponent />,
-            },
-            {
-              path: 'suratkeluar',
-              element: <SuratKeluarComponent />,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      path: '/opd',
-      element: <PrivateRoute />,
-      children: [
-        {
-          path: '/opd',
-          element: <MainLayout />,
-          children: [
-            {
-              path: 'home',
-              element: <OpdHome />,
-              //   index: true,
-            },
-            {
-              path: 'arsip',
-              element: <OpdArsip />,
+              element: <MainArsip />,
             },
             {
               path: 'suratmasuk',

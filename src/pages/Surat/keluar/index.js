@@ -135,6 +135,7 @@ const SuratKeluar = () => {
   useEffect(() => {
     getSignature();
     getTempSurat();
+    console.log(signature);
   }, [EditValue]);
   return (
     <>
@@ -188,13 +189,13 @@ const SuratKeluar = () => {
               <Card sx={{ p: 4 }}>
                 <Stack spacing={1} direction="column">
                   <Autocomplete
-                    options={signature.filter((item) => item.type === 'ttd')}
+                    options={signature.filter((item) => item.paraf === 1)}
                     getOptionLabel={(option) => option.nama}
                     isOptionEqualToValue={(options, values) => options.nama === values.nama}
                     renderInput={(props) => <TextField {...props} label="Penanda Tangan" variant="standard" />}
                   />
                   <Autocomplete
-                    options={signature.filter((item) => item.type === 'pemaraf')}
+                    options={signature.filter((item) => item.tandatangan === 1)}
                     getOptionLabel={(option) => option.nama}
                     isOptionEqualToValue={(options, values) => options.nama === values.nama}
                     renderInput={(props) => <TextField {...props} label="Pemaraf" variant="standard" />}
