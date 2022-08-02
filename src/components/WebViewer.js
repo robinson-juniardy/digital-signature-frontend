@@ -20,6 +20,7 @@ export default function WebViewerComponent() {
       },
       viewer.current
     ).then((instance) => {
+      console.log(instance);
       setInstance(instance);
       instance.UI.setHeaderItems((header) => {
         header.push({

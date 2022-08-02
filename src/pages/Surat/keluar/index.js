@@ -130,8 +130,6 @@ const SuratKeluar = () => {
     },
   });
 
-  console.log(formData);
-
   useEffect(() => {
     getSignature();
     getTempSurat();

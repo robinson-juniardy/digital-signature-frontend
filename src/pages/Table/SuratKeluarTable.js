@@ -286,7 +286,11 @@ const SuratKeluarTable = React.memo(({ setFilename, setOpen, open, setRows }) =>
             filter
             body={(option) => {
               if (option.eksekusi === 'Di Proses') {
-                return <Badge value={option.eksekusi} severity="warning"></Badge>;
+                return (
+                  <>
+                    <Badge value={option.eksekusi} severity="warning"></Badge>
+                  </>
+                );
               }
               if (option.eksekusi === 'Menunggu Paraf') {
                 return <Badge value={option.eksekusi} severity="info"></Badge>;
